@@ -34,3 +34,23 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+
+## Info
+
+1. In package.json you will find all installed libraries.
+2. For styling we will use Tailwindcss, and Shadcn/ui
+   DOCS: https://ui.shadcn.com/
+   DOCS: https://tailwindcss.com/
+
+## TODO
+1. Check if required libraries are installed: shadcn and tailwindcss
+2. Read about the routing sistem in nextjs https://nextjs.org/docs/app/building-your-application/routing
+3. Create a new page called test should be accessed on /test
+4. Create a new folder called Components
+NextJs Convention: EACH Component should live in his own folder with the same name.
+Create 2 components One shuld be a Signinform.tsx and a second one should be a SignupForm.tsx
+Both components for now should be rendered on the test page and the components should be responsive.
+USE TAILWIND CSS CLasses and ShadCnUI components
+
+   
