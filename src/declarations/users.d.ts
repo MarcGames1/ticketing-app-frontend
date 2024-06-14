@@ -9,6 +9,7 @@ export interface Iuser {
     role:EmployeeRole,
 }
 
+
 export enum EmployeeRole {
     MANAGER="MANAGER",  // big BO$$
     EMPLOYEE= 'EMPLOYEE', // WORKER / poor people

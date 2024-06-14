@@ -2,10 +2,15 @@
 import {Iuser} from "@/declarations/users";
 
 export function useCurrentUser() {
-    let user :Iuser | undefined = undefined;
-   const userString = localStorage.getItem('user')
+
+    let storedUser :Iuser | undefined = undefined;
+    const user = storedUser // TODO This should be an api get request for current logged in user
+    const userString = localStorage.getItem('user')
     if(userString) {
-        user = JSON.parse(userString)
+        storedUser = JSON.parse(userString)
+        if(storedUser && storedUser.id){
+            return {user}
+        }
         return {user}
     }
 
