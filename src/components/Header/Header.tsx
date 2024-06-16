@@ -4,6 +4,7 @@ import {useState} from "react";
 import { useTheme } from "next-themes"
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
+import Modal from "@/components/Modal";
 
 
 const Header = () =>{
@@ -19,7 +20,7 @@ const Header = () =>{
                             <>
                                 <Image src="/logo-mobile.svg" alt="kanban logo" height={25} width={24}  />
                                 <button className="flex justify-center items-center" onClick={() => setShowMenu(true)}>
-                                    <h2 className="heading-lg ml-5 mr-2">"No Board Found"</h2>
+                                    <h2 className="heading-lg ml-5 mr-2">No Board Found</h2>
                                     {
                                         showMenu ? (
                                             <Image src="/icon-chevron-up.svg" alt="chevron" height={4} width={8} />

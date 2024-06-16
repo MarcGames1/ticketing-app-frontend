@@ -45,7 +45,7 @@ class Task implements ITask {
         const res = api.get(`/api/tasks/${id}`, {
             headers: {
                 // "Content-Type": "application/json",
-                'Access-Control-Allow-Origin': 'http://localhost:3000',
+                // 'Access-Control-Allow-Origin': 'http://localhost:3000',
             }})
         const resData = await handleApiResponse<ITask>(res)
         return new Task(resData)

@@ -2,22 +2,19 @@ import useTicketsByStatus from "@/hooks/useTicketsByStatus";
 import {DragDropContext} from "react-beautiful-dnd";
 import Column from "@/components/Board/Column";
 import TaskComponent from "@/components/Board/Task";
+import {useState} from "react";
+import {ITicketByStatus} from "@/declarations/tickets";
 
 const BoardComponent = () => {
-    const allTickets = useTicketsByStatus()
+
+    const [allTickets, setIsDataUpdated] = useTicketsByStatus()
     const dragTask = (source: any, destination: any) => {
         // dropped outside a column
         if (!destination) {
             return;
         }
     }
-        const AllTasks = allTickets.map((statusAndTicket, i) => (
-        statusAndTicket.tickets.map((ticket, j) => {                    // TODO Check Condition
-            const tasks = statusAndTicket.tickets[i].tasks.map(task => task);
-            return tasks.map(t =><TaskComponent data={t} index={j} key={Math.random() * 100}/>)
 
-        })
-        ))
         function handleOnDragEnd(result: { source: any; destination: any; }) {
             const {source, destination} = result;
             dragTask(source, destination);

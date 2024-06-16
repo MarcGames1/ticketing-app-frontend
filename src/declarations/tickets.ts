@@ -2,12 +2,12 @@ import IAttachment from "@/declarations/attachment";
 import ITask from "@/declarations/task";
 import Ticket from "@/entities/ticket";
 export enum TaskStatus {
-    Pending,
-    InProgress,
-    Completed
+    Pending="Pending",
+    InProgress="InProgress",
+    Completed="Completed"
 }
 export default interface ITicket {
-    id:string,
+    id:string | number,
     status:TaskStatus,
     title:string,
     content:string,

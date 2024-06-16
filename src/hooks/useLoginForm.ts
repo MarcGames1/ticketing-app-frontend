@@ -12,7 +12,8 @@ import {z} from "zod";
 import {APIErrorResponse} from "@/declarations/Api";
 import {Idepartment} from "@/declarations/deptartment";
 import {EmployeeRole, Iuser} from "@/declarations/users"; // Assume FormSchema is exported from another file
-
+import api, {ApiClientError} from "@/lib/ApiClient";
+import useLocalStorage from "@/hooks/useLocalStorage";
 
 export const FormSchema = z.object({
     email: z.string().email( {
@@ -21,6 +22,7 @@ export const FormSchema = z.object({
     password: z.string().min(2, { message: "Password must have at least 6 caracters",}).max(50, { message: "Too Manny Caracters for a password don't worry about it no one will hack your account",})
 })
 export function useLoginForm() {
+    const [user, setUser] = useLocalStorage("user");
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const form = useForm({
@@ -36,34 +38,24 @@ export function useLoginForm() {
 
     const onSubmit = async (data: { email:string; password:string }) => {
         setIsLoading(true);
-        let res = undefined;
-        const apiUrl = 'http://localhost:8080/api/auth/login'
-        console.log(apiUrl)
-        console.table(data)
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            body: JSON.stringify(data),
-           // mode: "no-cors", // no-cors, *cors, same-origin
-            headers:{
-                'Content-Type': "application/json"
-            }
-        })
-          const jsonRes = await response.json();
-        if(!jsonRes.ok && !jsonRes.id){
-            res = jsonRes  as unknown as APIErrorResponse;
+        let res =await api.post('/api/auth/login', data, {headers:{"Content-Type":"application/json"}})
+
+        if( (res instanceof  ApiClientError )|| !res.data.ok && !res.data.id){
+
             // @ts-ignore
             toast({
-                title: res.title,
+                title: String(res.status),
                 // @ts-ignore
-                description:  "UNKNOWN SERVER ERROR" ,
+                description: res.message || "UNKNOWN SERVER ERROR" ,
                 variant: 'destructive'
             });
         } else {
-            const userDetails =jsonRes as unknown as Iuser
+            const userDetails =res.data as unknown as Iuser
             console.log(userDetails, "USER DETAILSSS")
             try {
                 console.log("Writing in Local Storage?? ==> ")
-                localStorage.setItem('user', JSON.stringify(userDetails))
+                setUser(userDetails)
+
             }
             catch (e){
                 throw e

@@ -1,18 +1,17 @@
 'use client'
 import {Iuser} from "@/declarations/users";
+import {useRouter} from "next/navigation";
+import useLocalStorage from "@/hooks/useLocalStorage";
 
 export function useCurrentUser() {
+    const router = useRouter()
+    const [user, setUserToLS] = useLocalStorage("user");
+    if(!user) {
+        router.push('/login')
+    }
 
-    let storedUser :Iuser | undefined = undefined;
-    const user = storedUser // TODO This should be an api get request for current logged in user
-    const userString = localStorage.getItem('user')
-    if(userString) {
-        storedUser = JSON.parse(userString)
-        if(storedUser && storedUser.id){
-            return {user}
-        }
         return {user}
+
     }
 
-    return {user};
-    }
+

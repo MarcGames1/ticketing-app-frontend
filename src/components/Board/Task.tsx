@@ -1,16 +1,20 @@
 import {useState} from "react";
-import { Draggable } from "react-beautiful-dnd";
-import Task from "@/entities/tasks";
+import {Draggable} from "react-beautiful-dnd";
 import Ticket from "@/entities/ticket";
+import {TaskStatus} from "@/declarations/tickets";
+import Modal from "../Modal";
+import TaskDetailModal from "@/components/Modal/TaskDetailModal";
 
 
 const TaskComponent = ({ data, index }:{data:Ticket, index:number}) => {
+    console.log(data)
     const [openTaskModal, setOpenTaskModal] = useState(false);
     const [updateModal, setUpdateModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
+    // const completedSubtasks = data.reduce((acc, subtask) => subtask.status === TaskStatus.Completed ? acc + 1 : acc, 0);
 
     //number of completed subtasks
-    // const completedSubtasks = data.reduce((acc, subtask) => subtask.isCompleted ? acc + 1 : acc, 0);
+    const completedSubtasks = data.tasks.reduce((acc, subtask) => subtask.status === TaskStatus.Completed ? acc + 1 : acc, 0);
     return (
         <Draggable draggableId={String(data.id)} index={index} >
             {(provided) => (
@@ -19,22 +23,25 @@ const TaskComponent = ({ data, index }:{data:Ticket, index:number}) => {
                         {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}
                         onClick={() => setOpenTaskModal(true)}>
                         <h4 className="heading-md mb-2 group-hover:text-mainPurple">{data.title}</h4>
-                        {/*<p className="body-md text-mediumGrey">{completedSubtasks} of {data.subtasks.length} subtasks</p>*/}
+                        <p className="body-md text-mediumGrey"> {completedSubtasks} of {data.tasks.length} tasks
+                            completed</p>
+                        <p className="body-md text-mediumGrey"><span className={'body-lg'}>Attachments: </span>{data.attachments.length}</p>
+                        <p className={'body-md text-mediumGrey'}>{data.content}</p>
                     </li>
-                    {/*<Modal show={openTaskModal} onClose={() => setOpenTaskModal(false)}>*/}
-                    {/*    <TaskDetailModal*/}
-                    {/*        data={data}*/}
-                    {/*        completedSubtasks={completedSubtasks}*/}
-                    {/*        close={() => setOpenTaskModal(false)}*/}
-                    {/*        switchToUpdate={() => {*/}
-                    {/*            setOpenTaskModal(false);*/}
-                    {/*            setUpdateModal(true);*/}
-                    {/*        }}*/}
-                    {/*        switchToDelete={() => {*/}
-                    {/*            setOpenTaskModal(false);*/}
-                    {/*            setDeleteModal(true);*/}
-                    {/*        }} />*/}
-                    {/*</Modal>*/}
+                    <Modal show={openTaskModal} onClose={() => setOpenTaskModal(false)}>
+                        <TaskDetailModal
+                            data={data}
+                            completedSubtasks={completedSubtasks}
+                            // close={() => setOpenTaskModal(false)}
+                            switchToUpdate={() => {
+                                setOpenTaskModal(false);
+                                setUpdateModal(true);
+                            }}
+                            switchToDelete={() => {
+                                setOpenTaskModal(false);
+                                setDeleteModal(true);
+                            }} />
+                    </Modal>
                     {/*<Modal show={updateModal} onClose={() => setUpdateModal(!updateModal)}>*/}
                     {/*    <UpdateTaskModal data={data} close={() => setUpdateModal(false)}/>*/}
                     {/*</Modal>*/}
@@ -49,7 +56,8 @@ const TaskComponent = ({ data, index }:{data:Ticket, index:number}) => {
                     {/*            deleteTask(data.id)*/}
                     {/*            setDeleteModal(false);*/}
                     {/*        }}/>*/}
-                    {/*</Modal>*/}
+                        <></>
+                    </Modal>
                 </>
             )}
         </Draggable>

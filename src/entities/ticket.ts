@@ -5,22 +5,22 @@ import api from "@/lib/ApiClient";
 import {handleApiResponse} from "@/lib/ApiClient/utils";
 
 export default class Ticket implements Iticket {
-    constructor(data:{attachments: IAttachment[], content: string, id: string, tasks: ITask[], title: string, status:TaskStatus}) {
+    constructor(data:{attachments: IAttachment[], content: string, id: string | number, tasks: ITask[], title: string, status:TaskStatus}) {
         this.attachments = data.attachments;
         this.content = data.content;
-        this.id = data.id;
+        this.id = data.id ;
         this.tasks = data.tasks;
         this.title = data.title;
         this.status = data.status
     }
     attachments: IAttachment[];
     content: string;
-    id: string;
+    id: string | number;
     tasks: ITask[];
     title: string;
     status :TaskStatus;
 
-    public static async Create (data:Iticket):Promise<Ticket> {
+    public static async Create (data:Partial<Iticket>):Promise<Ticket> {
         const res = api.post('/api/tickets', data)
         const resData = await handleApiResponse<Iticket>(res)
         return new Ticket(resData)
@@ -32,7 +32,7 @@ export default class Ticket implements Iticket {
         return new Ticket(resData)
     }
 
-    public static async getAll(): Promise<ITicketByStatus[]> {
+    public static async getAll(status:TaskStatus | undefined = undefined): Promise<ITicketByStatus[]> {
         try {
             const res = api.get('/api/tickets');
             const resData = await handleApiResponse<{ status: TaskStatus, tickets: Iticket[] }[]>(res);
@@ -41,8 +41,10 @@ export default class Ticket implements Iticket {
                 status: group.status,
                 tickets: group.tickets.map(ticketData => new Ticket(ticketData))
             }));
+            {
+             return ticketsByStatus;
+            }
 
-            return ticketsByStatus;
         } catch (error) {
             console.error('Failed to fetch tickets:', error);
             throw error;
@@ -59,5 +61,7 @@ export default class Ticket implements Iticket {
          await handleApiResponse(res)
         // todo what shall this return?
     }
-
+ public static filter (by:TaskStatus, allTicketsByStatus:ITicketByStatus[]){
+     return allTicketsByStatus.filter(ticketsByStatus =>  by === ticketsByStatus.status )
+ }
 }
