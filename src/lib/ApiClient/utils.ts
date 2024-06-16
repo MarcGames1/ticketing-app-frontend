@@ -8,3 +8,7 @@ export async function handleApiResponse<T>(promise: Promise<ApiClientSuccess<T> 
         throw new Error(res.message);
     }
 }
+
+export function getCurrentUserId () {
+    return 1 // TODO MODIFY THIS
+}

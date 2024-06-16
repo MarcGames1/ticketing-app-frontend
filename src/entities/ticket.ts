@@ -1,23 +1,24 @@
-import Iticket from "@/declarations/tickets";
+import Iticket, {ITicketByStatus, TaskStatus} from "@/declarations/tickets";
 import IAttachment from "@/declarations/attachment";
 import ITask from "@/declarations/task";
-import {Iuser} from "@/declarations/users";
 import api from "@/lib/ApiClient";
 import {handleApiResponse} from "@/lib/ApiClient/utils";
 
 export default class Ticket implements Iticket {
-    constructor(data:{attachments: IAttachment[], content: string, id: string, tasks: ITask[], title: string}) {
+    constructor(data:{attachments: IAttachment[], content: string, id: string, tasks: ITask[], title: string, status:TaskStatus}) {
         this.attachments = data.attachments;
         this.content = data.content;
         this.id = data.id;
         this.tasks = data.tasks;
         this.title = data.title;
+        this.status = data.status
     }
     attachments: IAttachment[];
     content: string;
     id: string;
     tasks: ITask[];
     title: string;
+    status :TaskStatus;
 
     public static async Create (data:Iticket):Promise<Ticket> {
         const res = api.post('/api/tickets', data)
@@ -31,14 +32,22 @@ export default class Ticket implements Iticket {
         return new Ticket(resData)
     }
 
-    public static async getAll():Promise<Ticket[]> {
-        const res = api.get('/api/tickets')
-        const resData = await handleApiResponse<Iticket[]>(res)
-        const tickets:Ticket[] =[]
-        resData.forEach(d => tickets.push(new Ticket(d)))
-        return tickets
-    }
+    public static async getAll(): Promise<ITicketByStatus[]> {
+        try {
+            const res = api.get('/api/tickets');
+            const resData = await handleApiResponse<{ status: TaskStatus, tickets: Iticket[] }[]>(res);
 
+            const ticketsByStatus: ITicketByStatus[] = resData.map(group => ({
+                status: group.status,
+                tickets: group.tickets.map(ticketData => new Ticket(ticketData))
+            }));
+
+            return ticketsByStatus;
+        } catch (error) {
+            console.error('Failed to fetch tickets:', error);
+            throw error;
+        }
+    }
     public static async GetById(id: number | string):Promise<Ticket> {
         const res = api.get(`/api/tickets/${id}`)
         const resData = await handleApiResponse<Iticket>(res)

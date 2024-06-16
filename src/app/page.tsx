@@ -1,13 +1,17 @@
 'use client'
 
-import {useCurrentUser} from "@/hooks/useCurrentUser";
-import {useRouter} from "next/navigation";
+
+import {useState} from "react";
 
 export default function Home() {
-
-  return (
-    <section>
-   <h1>Hello </h1>
-    </section>
-  );
+    const [showSidebar, setShowSidebar] = useState(true);
+    return (
+        <div className="h-screen">
+            Header
+            <div className="flex board-height">
+               Sidebar
+                Board
+            </div>
+        </div>
+    );
 }

@@ -1,5 +1,5 @@
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import {handleApiResponse} from "@/lib/ApiClient/utils";
+import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig} from 'axios';
+import {getCurrentUserId, handleApiResponse} from "@/lib/ApiClient/utils";
 
 
 export class ApiClientError extends AxiosError {
@@ -46,6 +46,12 @@ class ApiClient {
         this.axiosInstance = axios.create({
             baseURL: this.baseUrl, withCredentials: true,
         } );
+        this.axiosInstance.interceptors.request.use(
+            function (config) {
+               config.headers.set("userId", getCurrentUserId())
+                return config;
+            }
+        )
     }
 
     get(url: string ,config = {}) {

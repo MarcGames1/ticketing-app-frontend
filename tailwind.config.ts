@@ -8,7 +8,6 @@ const config = {
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
 	],
-  prefix: "",
   theme: {
     container: {
       center: true,
@@ -17,8 +16,26 @@ const config = {
         "2xl": "1400px",
       },
     },
+    fontSize: {
+      base: ["0.8125rem", "1.4375rem"],
+      xl: ["1.5rem", "1.875rem"],
+      lg: ["1.125rem", "1.4375rem"],
+      md: ["0.9375rem", "1.1875rem"],
+      sm: ["0.75rem", "0.9375rem"],
+    },
     extend: {
       colors: {
+        black: "#000112",
+        veryDarkGrey: "#20212C",
+        darkGrey: "#2B2C37",
+        darkGreyLine: "#3E3F4E",
+        mediumGrey: "#828fa3",
+        lightGreyLine: "#e4ebfa",
+        lightGrey: "#f4f7fd",
+        mainPurple: "#635FC7",
+        mainPurpleHover: "#A8A4FF",
+        mainRed: "#EA5555",
+        mainRedHover: "#FF9898",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -71,6 +88,13 @@ const config = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      letterSpacing: {
+        widest: "0.15rem",
+      },
+      boxShadow: {
+        main: "0px 4px 6px rgba(54, 78, 126, 0.101545)",
+        secondary: "0px 10px 20px rgba(54, 78, 126, 0.25)",
       },
     },
   },
