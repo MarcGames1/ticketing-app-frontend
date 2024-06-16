@@ -1,11 +1,24 @@
 import ITask from "@/declarations/task";
-import Iticket from "@/declarations/tickets";
+import Iticket, {TaskStatus} from "@/declarations/tickets";
 import api from "@/lib/ApiClient";
 import {handleApiResponse} from "@/lib/ApiClient/utils";
 
-export default class Task implements ITask {
-    constructor(data:ITask) {
+import {Iuser} from "@/declarations/users";
+import User from './user'
+class Task implements ITask {
 
+    description: string;
+    id: number;
+    status: TaskStatus;
+    title: string;
+    user: Iuser;
+
+    constructor(data:ITask) {
+        this.id = data.id
+        this.description = data.description
+        this.status = data.status
+        this.title = data.title
+        this.user = new User(data.user)
     }
 
     public static async Create (data:ITask):Promise<Task> {
@@ -22,15 +35,19 @@ export default class Task implements ITask {
 
     public static async getAll():Promise<Task[]> {
         const res = api.get('/api/tasks')
-        const resData = await handleApiResponse<Iticket[]>(res)
+        const resData = await handleApiResponse<ITask[]>(res)
         const tasks:Task[] =[]
         resData.forEach(d => tasks.push(new Task(d)))
         return tasks
     }
 
     public static async GetById(id: number | string):Promise<Task> {
-        const res = api.get(`/api/tasks/${id}`)
-        const resData = await handleApiResponse<Iticket>(res)
+        const res = api.get(`/api/tasks/${id}`, {
+            headers: {
+                // "Content-Type": "application/json",
+                'Access-Control-Allow-Origin': 'http://localhost:3000',
+            }})
+        const resData = await handleApiResponse<ITask>(res)
         return new Task(resData)
     }
 
@@ -40,4 +57,7 @@ export default class Task implements ITask {
         // todo what shall this return?
     }
 
+
 }
+
+export default Task
