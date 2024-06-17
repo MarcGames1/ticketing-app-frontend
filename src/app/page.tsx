@@ -4,11 +4,13 @@ import {useRouter} from "next/navigation";
 
 import {useState} from "react";
 import BoardComponent from "@/components/Board/Board";
+import AppLayout from "@/components/Layout/AppLayout";
 
 export default function Home() {
     const router = useRouter()
-    const [showSidebar, setShowSidebar] = useState(true);
+
     const user = useCurrentUser()
+    const [board, setCurrentBoard] = useState()
 
     if(!user || !user?.id) {
         setTimeout(()=>{
@@ -18,14 +20,8 @@ export default function Home() {
     }
 
     return (
-        <div className="h-screen">
-            <div>
-                Header
-            </div>
-            <div className="flex board-height">
-               <div>Sidebar</div>
-                <BoardComponent />
-            </div>
-        </div>
+   <AppLayout>
+       <BoardComponent />
+   </AppLayout>
     );
 }

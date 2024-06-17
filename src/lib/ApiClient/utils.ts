@@ -12,14 +12,19 @@ export async function handleApiResponse<T>(promise: Promise<ApiClientSuccess<T> 
 }
 
 export function getCurrentUserId () {
-    const lsString = localStorage.getItem('user')
-    console.log(lsString)
-    if(!lsString || lsString === 'null'|| lsString === "undefined"){
-        return undefined
+    try {
+        const lsString = localStorage.getItem('user')
+        console.log(lsString)
+        if(!lsString || lsString === 'null'|| lsString === "undefined"){
+            return undefined
+        }
+        const user = JSON.parse(String(lsString))
+        if(user && user.id) {
+            return user.id
+        }
     }
-    const user = JSON.parse(String(lsString))
-    if(user && user.id) {
-        return user.id
+    catch (e) {
+        return undefined
     }
 
 }
