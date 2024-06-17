@@ -39,7 +39,7 @@ export function useLoginForm() {
     const onSubmit = async (data: { email:string; password:string }) => {
         setIsLoading(true);
         let res =await api.post('/api/auth/login', data, {headers:{"Content-Type":"application/json"}})
-
+        console.log(res)
         if( (res instanceof  ApiClientError )|| !res.data.ok && !res.data.id){
 
             // @ts-ignore
@@ -49,9 +49,9 @@ export function useLoginForm() {
                 description: res.message || "UNKNOWN SERVER ERROR" ,
                 variant: 'destructive'
             });
-        } else {
+        }
+        else {
             const userDetails =res.data as unknown as Iuser
-            console.log(userDetails, "USER DETAILSSS")
             try {
                 console.log("Writing in Local Storage?? ==> ")
                 setUser(userDetails)
@@ -64,7 +64,9 @@ export function useLoginForm() {
             console.table(userDetails)
 
 
-            router.push('/')
+           setTimeout(()=>{
+               router.push('/')
+           },300)
             toast({
                 title: 'Logged in Successfully',
                 description: `Welcome ${userDetails.lastName}`,

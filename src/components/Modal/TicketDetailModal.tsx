@@ -1,8 +1,7 @@
-import { useBoards } from "@src/context";
-import EditButton from "@components/shared/EditButton";
-import StatusDropdown from "@components/shared/StatusDropdown";
+  import EditButton from "@/components/shared/EditButton";
+import StatusDropdown from "@/components/shared/StatusDropdown";
 
-const TaskDetailModal = ({ data, completedSubtasks, switchToUpdate, switchToDelete, close }) => {
+const TicketDetailModal = ({ data, completedSubtasks, switchToUpdate, switchToDelete, close }) => {
 
 // TODO
     return (
@@ -13,7 +12,7 @@ const TaskDetailModal = ({ data, completedSubtasks, switchToUpdate, switchToDele
                     switchToUpdate={switchToUpdate}
                     switchToDelete={switchToDelete}
                     taskId={data.id}
-                    type="Task"
+                    type="task"
                     className="bottom-0 left-0 -translate-x-2/4 translate-y-28"/>
             </div>
             <p className="body-lg text-mediumGrey">
@@ -42,4 +41,4 @@ const TaskDetailModal = ({ data, completedSubtasks, switchToUpdate, switchToDele
         </div>
     )
 }
-export default TaskDetailModal
+export default TicketDetailModal

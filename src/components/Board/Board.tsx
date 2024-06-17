@@ -1,47 +1,65 @@
+import { FC } from "react";
+import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
 import useTicketsByStatus from "@/hooks/useTicketsByStatus";
-import {DragDropContext} from "react-beautiful-dnd";
 import Column from "@/components/Board/Column";
-import TaskComponent from "@/components/Board/Task";
-import {useState} from "react";
-import {ITicketByStatus} from "@/declarations/tickets";
+import TicketsComponent from "@/components/Board/TicketsComponent";
+import { ITicketByStatus } from "@/declarations/tickets";
+import Ticket from "@/entities/ticket";
+import {id} from "postcss-selector-parser";
 
-const BoardComponent = () => {
+const BoardComponent: FC = () => {
+    const [allTickets, setIsDataUpdated] = useTicketsByStatus();
 
-    const [allTickets, setIsDataUpdated] = useTicketsByStatus()
-    const dragTask = (source: any, destination: any) => {
-        // dropped outside a column
-        if (!destination) {
+    const handleOnDragEnd = (result: DropResult) => {
+        const { source, destination } = result;
+
+        if (!destination) return;
+
+        if (source.droppableId === destination.droppableId && source.index === destination.index) {
             return;
         }
-    }
 
-        function handleOnDragEnd(result: { source: any; destination: any; }) {
-            const {source, destination} = result;
-            dragTask(source, destination);
-        }
+        const sourceColumnIndex = allTickets.findIndex((col) => col.status === source.droppableId);
+        const destColumnIndex = allTickets.findIndex((col) => col.status === destination.droppableId);
 
-        // if(!allTickets.length) return <NoBoardsFound />
-        // if(!allTickets.columns.length) return <EmptyBoard />
+        const sourceColumn = allTickets[sourceColumnIndex];
+        const destColumn = allTickets[destColumnIndex];
 
-        return (
-            <main
-                className='overflow-y-hidden scrollbar-thin scrollbar-thumb-mainPurple scrollbar-track-transparent flex-1 p-4 space-x-4 bg-lightGrey dark:bg-veryDarkGrey flex'>
-                <DragDropContext
-                    onDragEnd={handleOnDragEnd}
-                >
-                    {
-                        allTickets.map((statusAndTicket, i) => (
-                            <Column data={statusAndTicket} key={i}>
-                               <>
-                               {statusAndTicket.tickets.map((t, i) =>   <TaskComponent key={i * Math.random() * 100} data={t} index={i * Math.random() * 100} />)}
 
-                               </>
+        const movedTicket = sourceColumn.tickets[source.index];
+        console.log("Current Ticket:", movedTicket);
+        Ticket.UpdateStatus(movedTicket.id, destColumn.status)
+        setIsDataUpdated(false)
+    };
+
+    return (
+        <main className='overflow-y-hidden scrollbar-thin scrollbar-thumb-mainPurple scrollbar-track-transparent flex-1 p-4 space-x-4 bg-lightGrey dark:bg-veryDarkGrey flex'>
+            <DragDropContext onDragEnd={handleOnDragEnd}>
+                {allTickets.map((statusAndTicket, columnIndex) => (
+                    <Droppable droppableId={statusAndTicket.status} key={statusAndTicket.status}>
+                        {(provided) => (
+                            <Column ref={provided.innerRef} data={statusAndTicket} {...provided.droppableProps}>
+                                {statusAndTicket.tickets.map((ticket, index) => (
+                                    <Draggable key={ticket.id} draggableId={String(Number(ticket.id) +1)} index={index}>
+                                        {(provided) => (
+                                            <TicketsComponent
+                                                index={index}
+                                                ref={provided.innerRef}
+                                                data={ticket}
+                                                {...provided.draggableProps}
+                                                {...provided.dragHandleProps}
+                                            />
+                                        )}
+                                    </Draggable>
+                                ))}
+                                {provided.placeholder}
                             </Column>
-                        ))
-                    }
-                </DragDropContext>
-                {/*<NewColumn />*/}
-            </main>
-        )
-}
-export default BoardComponent
+                        )}
+                    </Droppable>
+                ))}
+            </DragDropContext>
+        </main>
+    );
+};
+
+export default BoardComponent;

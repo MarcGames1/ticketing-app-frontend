@@ -8,7 +8,14 @@ import BoardComponent from "@/components/Board/Board";
 export default function Home() {
     const router = useRouter()
     const [showSidebar, setShowSidebar] = useState(true);
-    const {user} = useCurrentUser()
+    const user = useCurrentUser()
+
+    if(!user || !user?.id) {
+        setTimeout(()=>{
+            router.push('/login')
+        }, 300)
+        return <>No User Detected ... </>
+    }
 
     return (
         <div className="h-screen">

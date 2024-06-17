@@ -46,9 +46,12 @@ class ApiClient {
         this.axiosInstance = axios.create({
             baseURL: this.baseUrl, withCredentials: true, // todo change it
         } );
+        const userID = getCurrentUserId()
         this.axiosInstance.interceptors.request.use(
             function (config) {
-               config.headers.set("userId", getCurrentUserId())
+               if(userID){
+                   config.headers.set("userId", userID )
+               }
                 // config.headers.set("Access-Control-Expose-Headers", "Origin")
                 // config.headers.set("Origin", "http://localhost:3000")
                 return config;

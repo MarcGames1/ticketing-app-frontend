@@ -6,11 +6,10 @@ import useLocalStorage from "@/hooks/useLocalStorage";
 export function useCurrentUser() {
     const router = useRouter()
     const [user, setUserToLS] = useLocalStorage("user");
-    if(!user) {
-        router.push('/login')
+    if(user && user?.id){
+        return user as Iuser
     }
-
-        return {user}
+        return undefined
 
     }
 

@@ -31,6 +31,13 @@ export default class Ticket implements Iticket {
         const resData = await handleApiResponse<Iticket>(res)
         return new Ticket(resData)
     }
+    public static async UpdateStatus(id:number | string, status :TaskStatus ):Promise<void> {
+        const res = api.patch(`/api/tickets/${id}/changeStatus`,
+            JSON.stringify({status}),
+            {headers:{"Content-Type":'application/json'}} )
+        const resData = await handleApiResponse<any>(res)
+        console.log('Status Updated for ticket  ' + id)
+    }
 
     public static async getAll(status:TaskStatus | undefined = undefined): Promise<ITicketByStatus[]> {
         try {
