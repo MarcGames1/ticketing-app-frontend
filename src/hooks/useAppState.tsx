@@ -8,9 +8,11 @@ export enum AppState {
     Departments="Departments",
     Users = "Users"
 }
-interface UseAppStateReturn {
+const navigationData = [AppState.Tickets_Board, AppState.Users, AppState.Departments]
+export interface UseAppStateReturn {
     appState: AppState;
     updateAppState: (state: AppState) => void;
+    navigationData:AppState[]
 }
 const useAppState =(): UseAppStateReturn=>{
     const [appState, setAppState] = useState<AppState>(AppState.Tickets_Board)
@@ -21,7 +23,7 @@ const useAppState =(): UseAppStateReturn=>{
         setTimeout(()=>{
             router.push('/login')
         },300)
-        return {appState, updateAppState:setAppState}
+        return {appState, updateAppState:setAppState, navigationData}
     }
     const updateAppState = (state:AppState)=>{
         switch (user.role){
@@ -39,7 +41,7 @@ const useAppState =(): UseAppStateReturn=>{
                 break
         }
     }
-    return {appState, updateAppState}
+    return {appState, updateAppState, navigationData}
 }
 
 export default useAppState

@@ -2,15 +2,14 @@
 import {useCurrentUser} from "@/hooks/useCurrentUser";
 import {useRouter} from "next/navigation";
 
-import {useState} from "react";
-import BoardComponent from "@/components/Board/Board";
 import AppLayout from "@/components/Layout/AppLayout";
+
+import MainComponent from "@/components/MainComponent";
 
 export default function Home() {
     const router = useRouter()
 
     const user = useCurrentUser()
-    const [board, setCurrentBoard] = useState()
 
     if(!user || !user?.id) {
         setTimeout(()=>{
@@ -19,9 +18,10 @@ export default function Home() {
         return <>No User Detected ... </>
     }
 
+
     return (
    <AppLayout>
-       <BoardComponent />
+      <MainComponent />
    </AppLayout>
     );
 }

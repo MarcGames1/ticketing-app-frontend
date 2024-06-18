@@ -3,12 +3,12 @@ import { useRef, useState, MouseEventHandler } from "react";
 import { motion } from "framer-motion";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
 import Modal from "@/components/Modal";
+import UpdateTicketModal from "@/components/Modal/UpdateTicketModal";
 
-import DeleteBoardModal from "@/components/Modal/DeleteBoardModal";
-import UpdateBoardModal from "@/components/Modal/UpdateBoardModal";
+
 
 interface EditButtonProps {
-    type: 'board' | 'task';
+    type: 'ticket' | 'task';
     className?: string;
     onConfirm: () => void;
     switchToUpdate: () => void;
@@ -59,7 +59,7 @@ const EditButton: React.FC<EditButtonProps> = ({
                 animate={showMenu ? "open" : "closed"}
                 className={`${className} flex flex-col items-start space-y-4 absolute body-lg rounded-lg p-4 w-48 shadow-main capitalize bg-white dark:bg-veryDarkGrey`}
             >
-                {type === 'board' ? (
+                {type === 'ticket' ? (
                     <>
                         <button
                             className="text-mediumGrey"
@@ -68,7 +68,7 @@ const EditButton: React.FC<EditButtonProps> = ({
                             Edit {type}
                         </button>
                         <Modal show={showUpdateBoardModal} onClose={() => setShowUpdateBoardModal(!showUpdateBoardModal)}>
-                            <UpdateBoardModal onConfirm={() => setShowUpdateBoardModal(!showUpdateBoardModal)} />
+                           <>Update Ticket</> {/*<UpdateTicketModal onConfirm={() => setShowUpdateBoardModal(!showUpdateBoardModal)} />*/}
                         </Modal>
                         <button
                             className="text-mainRed"
@@ -77,7 +77,7 @@ const EditButton: React.FC<EditButtonProps> = ({
                             Delete {type}
                         </button>
                         <Modal show={showDeleteBoardModal} onClose={() => setShowDeleteBoardModal(!showDeleteBoardModal)}>
-                            <DeleteBoardModal onConfirm={onConfirm} onClose={() => setShowDeleteBoardModal(!showDeleteBoardModal)} />
+                            <>Delete Ticket</>{/*<DeleteBoardModal onConfirm={onConfirm} onClose={() => setShowDeleteBoardModal(!showDeleteBoardModal)} />*/}
                         </Modal>
                     </>
                 ) : (

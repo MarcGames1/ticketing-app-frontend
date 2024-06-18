@@ -3,10 +3,8 @@ import type { Config } from "tailwindcss"
 const config = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    './src/components/**/*.{ts,tsx}',
+    './src/app/**/*.{ts,tsx}',
 	],
   theme: {
     container: {
@@ -26,6 +24,7 @@ const config = {
     extend: {
       colors: {
         black: "#000112",
+        white:"#fff",
         veryDarkGrey: "#20212C",
         darkGrey: "#2B2C37",
         darkGreyLine: "#3E3F4E",
