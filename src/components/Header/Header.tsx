@@ -47,7 +47,7 @@ const Header = () =>{
                             <>
                                 <div
                                     className="w-[260px] lg:w-[300px] p-8 box-border transition-all ease border-r border-r-lightGreyLine dark:border-r-darkGreyLine">
-                                    <Image src={theme === 'dark' ? "/logo-light.svg" : "/logo-dark.svg"} alt="kanban logo" height={25} width={152}  />
+                                    <Image src={"/brand/logo.png"} alt="kanban logo" height={25} width={152}  />
                                 </div>
                                 <h2 className="heading-lg ml-5 mr-2">{appState || "No Board Found"}</h2>
                             </>

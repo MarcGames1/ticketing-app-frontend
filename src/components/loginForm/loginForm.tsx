@@ -21,7 +21,7 @@ const { form, onSubmit, isLoading } = useLoginForm()
 
     return (
         <div className={'flex flex-col items-center justify-items-center place-items-center '}>
-            <Image src={'/brand/logo.png'} width={500} height={500} alt={'app logo'} />
+            <Image src={'/brand/logo.png'} width={300} height={300} alt={'app logo'} />
             <Form {...form}>
                 <form method={'POST'} onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 ">
                     <FormField
