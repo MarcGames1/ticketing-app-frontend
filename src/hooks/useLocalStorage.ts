@@ -14,7 +14,10 @@ const useLocalStorage = (key:string, initial = null) => {
     });
 
     useEffect(() => {
-        window.localStorage.setItem(key, JSON.stringify(value));
+        if(!value){
+            window.localStorage.removeItem(key)
+        }
+      else window.localStorage.setItem(key, JSON.stringify(value));
     }, [key, value]);
 
     return [value, setValue];
