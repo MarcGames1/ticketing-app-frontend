@@ -9,7 +9,7 @@ const Providers = ({ children }: { children: React.ReactNode }) =>{
             <AppStateProvider>
                 {children}
                 <Toaster/>
-                <div id="modal"/>
+                <div id="modal"></div>
             </AppStateProvider>
         </ThemeProvider>
     )

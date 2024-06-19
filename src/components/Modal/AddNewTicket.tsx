@@ -1,3 +1,4 @@
+'use client'
 import Button from "@/components/shared/Button"
 import TextInput from "@/components/shared/TextInput";
 import { FieldArray, Form, Formik } from "formik"
@@ -6,9 +7,11 @@ import * as Yup from 'yup';
 import Ticket from "@/entities/ticket";
 import TextInputArea from "@/components/shared/TextInputArea";
 import {Dispatch, EventHandler, SetStateAction} from "react";
+import useTicketsByStatus from "@/hooks/useTicketsByStatus";
 
 const AddNewBoardModal = ({onClose}:{onClose:any}) => {
     // const { createBoard } = useBoards(); // TODO create Ticket Hook
+    const [allTickets, setIsDataUpdated, setAllTickets] = useTicketsByStatus();
     const validate = Yup.object({
         name: Yup.string().required("Can't be empty"),
 
@@ -23,10 +26,16 @@ const AddNewBoardModal = ({onClose}:{onClose:any}) => {
                 content: "",
             }}
             validationSchema={validate}
-            onSubmit={ (values) => {
-             
-                Ticket.Create(values)
-                onClose();
+            onSubmit={  async (values, { setSubmitting }) => {
+                try {
+                    await Ticket.Create(values);
+                    setIsDataUpdated(false);  // Assuming this should trigger some re-fetch or update
+                    onClose();  // Close modal after operation
+                } catch (error) {
+                    console.error("Failed to create ticket:", error);
+                } finally {
+                    setSubmitting(false);  // Reset submission state
+                }
             }}
         >
             { formik => (

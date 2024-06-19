@@ -26,12 +26,12 @@ const Header = () =>{
                             <>
                                 <Image src="/logo-mobile.svg" alt="kanban logo" height={25} width={24}  />
                                 <button className="flex justify-center items-center" onClick={() => setShowMenu(true)}>
-                                    <h2 className="heading-lg ml-5 mr-2">No Board Found</h2>
+                                    <h2 className="heading-lg ml-5 mr-2">{appState}</h2>
                                     {
                                         showMenu ? (
-                                            <Image src="/icon-chevron-up.svg" alt="chevron" height={4} width={8} />
+                                            <Image src="/brand/logo.png" alt="chevron" height={4} width={8} />
                                         ) :  (
-                                            <Image src="/icon-chevron-down.svg" alt="chevron" height={4} width={8} />
+                                            <Image src="/brand/logo.png" alt="chevron" height={4} width={8} />
                                         )
                                     }
                                 </button>

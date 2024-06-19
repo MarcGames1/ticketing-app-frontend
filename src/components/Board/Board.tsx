@@ -1,4 +1,4 @@
-import { FC } from "react";
+import {FC, useEffect} from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
 import useTicketsByStatus from "@/hooks/useTicketsByStatus";
 import Column from "@/components/Board/Column";
@@ -6,11 +6,14 @@ import TicketsComponent from "@/components/Board/TicketsComponent";
 import { ITicketByStatus } from "@/declarations/tickets";
 import Ticket from "@/entities/ticket";
 import {id} from "postcss-selector-parser";
+import {toast} from "@/components/ui/use-toast";
+import {ApiClientError} from "@/lib/ApiClient";
 
 const BoardComponent: FC = () => {
-    const [allTickets, setIsDataUpdated] = useTicketsByStatus();
+    const [allTickets, setIsDataUpdated, setAllTickets] = useTicketsByStatus();
 
-    const handleOnDragEnd = (result: DropResult) => {
+
+    const handleOnDragEnd = async (result: DropResult) => {
         const { source, destination } = result;
 
         if (!destination) return;
@@ -27,9 +30,41 @@ const BoardComponent: FC = () => {
 
 
         const movedTicket = sourceColumn.tickets[source.index];
-        console.log("Current Ticket:", movedTicket);
-        Ticket.UpdateStatus(movedTicket.id, destColumn.status)
-        setIsDataUpdated(false)
+
+       try {
+           const prevState= [...allTickets];
+           // remove moved ticket from previous collumn
+           allTickets[sourceColumnIndex].tickets
+               .splice(allTickets[sourceColumnIndex].tickets
+                   .findIndex(t =>t.id === movedTicket.id), 1)
+
+           allTickets[destColumnIndex].tickets.push(movedTicket) // add moved ticket to destination column
+           setAllTickets(allTickets) // update local state
+        // updateStatus API /changeStatus
+
+          const res = await Ticket.UpdateStatus(movedTicket.id, destColumn.status)
+           if(res instanceof ApiClientError){
+               toast({title:"Error in Server", variant: "destructive", description:"Operation not permited"})
+               setIsDataUpdated(false)
+           }
+           else  toast({title:"Success!", description:"Status Updated"})
+               // res
+               //     .catch(e =>{
+               //     toast({title:"Error in Server", variant: "destructive", description:e.message})
+               //     setAllTickets(prevState)
+               //     throw e
+               // })
+               // .then((e)=>{
+               //     toast({title:"Success!", description:"Status Updated"})
+               // })
+
+
+       } catch (e) {
+
+           toast({title:"Server Error", description:String(JSON.stringify(e))})
+           setIsDataUpdated(false)
+       }
+
     };
 
     return (

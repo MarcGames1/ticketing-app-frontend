@@ -40,7 +40,8 @@ const MainComponent = () =>{
     }, [appState]);
 
 
-return <main className={'overflow-y-hidden scrollbar-thin scrollbar-thumb-mainPurple scrollbar-track-transparent flex-1 p-4 space-x-4 bg-lightGrey dark:bg-veryDarkGrey flex'}>
+return <main
+    className={'overflow-y-hidden scrollbar-thin scrollbar-thumb-mainPurple scrollbar-track-transparent flex-1 p-4 space-x-4 bg-lightGrey dark:bg-veryDarkGrey flex'}>
     {currentComponent}
 </main>
 

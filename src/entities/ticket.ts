@@ -1,7 +1,7 @@
 import Iticket, {ITicketByStatus, TaskStatus} from "@/declarations/tickets";
 import IAttachment from "@/declarations/attachment";
 import ITask from "@/declarations/task";
-import api from "@/lib/ApiClient";
+import api, {ApiClientError, ApiClientSuccess} from "@/lib/ApiClient";
 import {handleApiResponse} from "@/lib/ApiClient/utils";
 
 export default class Ticket implements Iticket {
@@ -31,12 +31,10 @@ export default class Ticket implements Iticket {
         const resData = await handleApiResponse<Iticket>(res)
         return new Ticket(resData)
     }
-    public static async UpdateStatus(id:number | string, status :TaskStatus ):Promise<void> {
-        const res = api.patch(`/api/tickets/${id}/changeStatus`,
+    public static async UpdateStatus(id:number | string, status :TaskStatus ):Promise<ApiClientSuccess<any> | ApiClientError> {
+        return  await api.patch(`/api/tickets/${id}/changeStatus`,
             JSON.stringify({status}),
-            {headers:{"Content-Type":'application/json'}} )
-        const resData = await handleApiResponse<any>(res)
-        console.log('Status Updated for ticket  ' + id)
+            {headers: {"Content-Type": 'application/json'}})
     }
 
     public static async getAll(status:TaskStatus | undefined = undefined): Promise<ITicketByStatus[]> {

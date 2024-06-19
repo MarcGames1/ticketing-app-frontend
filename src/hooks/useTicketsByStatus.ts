@@ -18,10 +18,10 @@ const useTicketsByStatus =  (status?: TaskStatus, isDataRefreshed=true) => {
         setIsDataUpdated(true)
     }, [isDataUpdated]);
     if(status){
-        return [ Ticket.filter(status, allTickets), setIsDataUpdated]  as const;
+        return [ Ticket.filter(status, allTickets), setIsDataUpdated, setAllTickets]  as const;
     }
 
-    else return [allTickets, setIsDataUpdated]  as const;
+    else return [allTickets, setIsDataUpdated, setAllTickets]  as const;
 
 }
 export default useTicketsByStatus
