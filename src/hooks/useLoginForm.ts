@@ -12,6 +12,7 @@ import useLocalStorage from "@/hooks/useLocalStorage";
 import {handleSigninResponse, IloginResponseData} from "@/lib/utils";
 import {LocalStoredData} from "@/declarations/localStorage";
 import Auth from "@/entities/Auth";
+import Actions from "@/ActionHandlers/Actions";
 
 export const FormSchema = z.object({
     email: z.string().email( {
@@ -37,46 +38,18 @@ export function useLoginForm() {
 
     const onSubmit = async (data: { email:string; password:string }) => {
         setIsLoading(true);
-        let res =await api.post('/api/auth/login', data, {headers:{"Content-Type":"application/json"}})
-        console.log(res)
-        if( (res instanceof  ApiClientError )|| !res.data.ok && !res.data.id){
-
-            // @ts-ignore
-            toast({
-                title: String(res.status),
-                // @ts-ignore
-                description: res.message || "UNKNOWN SERVER ERROR" ,
-                variant: 'destructive'
-            });
+       const loginResData = await Actions.Login(data)
+        try {
+            const {auth, user} = handleSigninResponse(loginResData)
+            setUser(user)
+            setAuth(auth)
+            Auth.getInstance(auth)
         }
-        else {
-            const loginResData =res.data as unknown as IloginResponseData
-            try {
-                const {auth, user} = handleSigninResponse(loginResData)
-                setUser(user)
-                setAuth(auth)
-               Auth.getInstance(auth)
-
-            }
-            catch (e){
-                throw e
-            }
-
-
-
-
-
-            if(user){
-                setTimeout(()=>{
-                    router.push('/')
-                },300)
-                toast({
-                    title: 'Logged in Successfully',
-                    description: `Welcome ${user.firstName}`,
-                });
-            }
-
+        catch (e){
+            throw e
         }
+        Actions.checkUser(user, router)
+
         setIsLoading(false);
     };
 

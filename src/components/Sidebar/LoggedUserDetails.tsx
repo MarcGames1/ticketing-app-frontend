@@ -6,6 +6,8 @@ import {useRouter} from "next/navigation";
 import {toast} from "@/components/ui/use-toast";
 import {LocalStoredData} from "@/declarations/localStorage";
 import {clearLocalStorage} from "@/lib/ApiClient/utils";
+import Auth from "@/entities/Auth";
+import Actions from "@/ActionHandlers/Actions";
 
 const LoggedUserDetails = () => {
     const [_ ,setValue]= useLocalStorage(LocalStoredData.user)
@@ -13,9 +15,8 @@ const LoggedUserDetails = () => {
     const router = useRouter()
 
     const logoutHandler = () =>{
+        Actions.Logout()
         setValue(undefined)
-        clearLocalStorage()
-        toast({title:"Logging you out", content:'redirecting to login page ...'})
         setTimeout(()=>{
             router.push('/login')
         },3)

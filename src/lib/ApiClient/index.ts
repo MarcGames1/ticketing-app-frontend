@@ -63,7 +63,7 @@ class ApiClient {
             (config) => {
                 const auth = getAuth()
                 if (auth) {
-                    config.headers['Authorization'] = `Bearer ${auth.accessToken}`;
+                    config.headers['Authorization'] = `Bearer ${auth.idToken}`;
                 }
                 return config;
             },
@@ -118,9 +118,9 @@ class ApiClient {
         try {
             const response = await axios.post(`${this.baseUrl}/api/auth/refreshToken`, { refreshToken });
             if (response.status === 200) {
-                const {accessToken, refreshToken} = response.data;
+                const {accessToken, idToken} = response.data;
 
-                return {accessToken, refreshToken}
+                return {accessToken, idToken}
             } else {
                 throw new Error('Unable to refresh token');
             }
@@ -133,7 +133,7 @@ class ApiClient {
             if (error) {
                 prom.reject(error);
             } else {
-                prom.resolve(token?.accessToken || '');
+                prom.resolve(token?.idToken || '');
             }
         });
         this.failedQueue = [];

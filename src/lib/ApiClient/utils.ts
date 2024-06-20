@@ -6,7 +6,7 @@ const isClientSide =  typeof window !== 'undefined' && typeof window.localStorag
 export const clearLocalStorage = () =>{
     if(isClientSide){
 
-        // localStorage.clear()
+        localStorage.clear()
     }
 }
 export async function handleApiResponse<T>(promise: Promise<ApiClientSuccess<T> | ApiClientError>): Promise<T> {

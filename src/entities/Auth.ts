@@ -1,7 +1,7 @@
 import { Iauth } from "@/declarations/auth";
 
 class Auth {
-    private static instance: Auth;
+    private static instance: Auth | undefined;
     private _accessToken: string;
     private _idToken: string;
     private _refreshToken: string;
@@ -19,12 +19,18 @@ class Auth {
             this._idToken = authData.idToken;
         }
     }
+    // remove singleton instance when signout
+    static signOut (){
+        Auth.instance = undefined
+    }
 
     // Static method to get the instance of Auth
     public static getInstance(authData: Iauth | string): Auth {
         if (!Auth.instance) {
             Auth.instance = new Auth(authData);
         }
+        // @ts-ignore
+        Auth.instance.updateTokens(authData)
         return Auth.instance;
     }
 

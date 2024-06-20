@@ -1,19 +1,20 @@
-// Import necessary components and hooks
-import { FC, useState } from 'react';
+import {FC, useState} from 'react';
 import Button from '@/components/shared/Button';
-import StatusDropdown from '@/components/shared/StatusDropdown';
 import TextInput from '@/components/shared/TextInput';
 import TextArea from '@/components/shared/TextInputArea';
 import InputArray from '@/components/shared/InputArray';
-// import { useBoards } from '@/context';
-import { Formik, Form, FieldArray } from 'formik';
+import {Form, Formik} from 'formik';
 import * as Yup from 'yup';
 import Tasks from "@/entities/tasks";
+import Ticket from "@/entities/ticket";
+import ITask from "@/declarations/task";
+import ITicket from "@/declarations/tickets";
 
 
-interface UpdateTaskModalProps {
-    data: TaskData;
+interface UpdateTicketModalProps {
+    data: Ticket;
     close: () => void;
+    onConfirm : () => void;
 }
 
 // Define the validation schema using Yup
@@ -29,11 +30,15 @@ const validate = Yup.object({
 });
 
 // Define the component with TypeScript
-const UpdateTicketModal: FC<UpdateTaskModalProps> = ({ data, close }) => {
+const UpdateTicketModal: FC<UpdateTicketModalProps> = ({ data, close, onConfirm }) => {
 
     const [status, setStatus] = useState<string>(data.status);
-    const [subtasks, setSubtasks] = useState<Tasks[]>(data.subtasks);
-
+    const [tasks, setTasks] = useState<Tasks[]>(data.tasks);
+    const getTaskTitles = (tasks:ITask[]) =>{
+        return tasks.map(t => {
+            return {title: t.title}
+        })
+    }
     return (
         <Formik
             initialValues={{
@@ -41,9 +46,11 @@ const UpdateTicketModal: FC<UpdateTaskModalProps> = ({ data, close }) => {
             status: status,
     }}
     validationSchema={validate}
-    onSubmit={(values) => {
+    onSubmit={async (values) => {
         values.status = status;
-        updateTask(values);
+        const ticket =values as Partial<ITicket>
+        await Ticket.Update(ticket);
+
         close();
     }}
 >
@@ -53,8 +60,8 @@ const UpdateTicketModal: FC<UpdateTaskModalProps> = ({ data, close }) => {
     <Form>
     <TextInput label="Title" name="title" type="text" placeholder="e.g. Take coffee break" />
     <TextArea label="Description" name="description" placeholder="e.g. It’s always good to take a break. This 15 minute break will recharge the batteries a little." />
-    <InputArray label="subtasks" array={formik.values.subtasks} />
-    <StatusDropdown status={status} setStatus={setStatus} />
+    <InputArray name={'Task Status'} label="tasks" array={getTaskTitles(formik.values.tasks)} />
+    {/*<StatusDropdown status={} setStatus={setStatus} />*/}
     <Button type="submit" className="mt-6 w-full bg-mainPurple text-white text-base rounded-full p-2 transition duration-200 hover:bg-mainPurpleHover">Save Changes</Button>
     </Form>
     </div>

@@ -19,3 +19,8 @@ export interface ITicketByStatus {
 status:TaskStatus;
 tickets:Ticket[]
 }
+
+export interface IcreateTicketData {
+    title:string,
+    content:string
+}

@@ -43,7 +43,7 @@ const InputArray: React.FC<InputArrayProps> = ({ label, array, name }) => {
                             onClick={() => arrayHelpers.push({ title: '' })}
                             className="w-full bg-mainPurple bg-opacity-10 text-mainPurple bold rounded-full p-2 pt-3 mt-3 transition duration-200 hover:bg-opacity-25 dark:bg-opacity-100 dark:bg-white"
                         >
-                            + Add New Subtask
+                            + Add New Task
                         </Button>
                     </div>
                 )}

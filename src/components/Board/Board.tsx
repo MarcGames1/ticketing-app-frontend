@@ -8,7 +8,12 @@ import Ticket from "@/entities/ticket";
 import {id} from "postcss-selector-parser";
 import {toast} from "@/components/ui/use-toast";
 import {ApiClientError} from "@/lib/ApiClient";
-
+import DetailsComponent from "@/components/Board/DetailsComponent";
+import {
+    ResizableHandle,
+    ResizablePanel,
+    ResizablePanelGroup,
+} from "@/components/ui/resizable"
 const BoardComponent: FC = () => {
     const [allTickets, setIsDataUpdated, setAllTickets] = useTicketsByStatus();
 
@@ -69,30 +74,40 @@ const BoardComponent: FC = () => {
 
     return (
         <main className='overflow-y-hidden scrollbar-thin scrollbar-thumb-mainPurple scrollbar-track-transparent flex-1 p-4 space-x-4 bg-lightGrey dark:bg-veryDarkGrey flex'>
+            <ResizablePanelGroup direction="horizontal">
+
+
+                <ResizablePanel>
+                    <ResizablePanelGroup direction={'horizontal'}>
             <DragDropContext onDragEnd={handleOnDragEnd}>
                 {allTickets.map((statusAndTicket, columnIndex) => (
-                    <Droppable droppableId={statusAndTicket.status} key={statusAndTicket.status}>
-                        {(provided) => (
-                            <Column ref={provided.innerRef} data={statusAndTicket} {...provided.droppableProps}>
-                                {statusAndTicket.tickets.map((ticket, index) => (
-                                    <Draggable key={ticket.id} draggableId={String(Number(ticket.id) +1)} index={index}>
-                                        {(provided) => (
-                                            <TicketsComponent
-                                                index={index}
-                                                ref={provided.innerRef}
-                                                data={ticket}
-                                                {...provided.draggableProps}
-                                                {...provided.dragHandleProps}
-                                            />
-                                        )}
-                                    </Draggable>
-                                ))}
-                                {provided.placeholder}
-                            </Column>
-                        )}
-                    </Droppable>
+                    <ResizablePanel key={statusAndTicket.status}>
+                        <Droppable droppableId={statusAndTicket.status} >
+                            {(provided) => (
+                                <Column ref={provided.innerRef} data={statusAndTicket} {...provided.droppableProps}>
+                                    {statusAndTicket.tickets.map((ticket, index) => (
+                                        <Draggable key={ticket.id} draggableId={String(Number(ticket.id) +1)} index={index}>
+                                            {(provided) => (
+                                                <TicketsComponent
+                                                    index={index}
+                                                    ref={provided.innerRef}
+                                                    data={ticket}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                />
+                                            )}
+                                        </Draggable>
+                                    ))}
+                                    {provided.placeholder}
+                                </Column>
+                            )}
+                        </Droppable>
+                    </ResizablePanel>
                 ))}
             </DragDropContext>
+                    </ResizablePanelGroup>
+                </ResizablePanel>
+            </ResizablePanelGroup>
         </main>
     );
 };
