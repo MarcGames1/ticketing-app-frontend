@@ -5,14 +5,14 @@ import {handleApiResponse} from "@/lib/ApiClient/utils";
 
 export default class User implements Iuser{
     constructor(data:Iuser) {
-        this.department = data.department;
+        this.department = data?.department;
         this.email = data.email;
         this.firstName = data.firstName;
         this.id = data.id;
         this.lastName = data.lastName;
         this.role = data.role;
     }
-    department: Idepartment;
+    department?: Idepartment;
     email: string;
     firstName: string;
     id: number;

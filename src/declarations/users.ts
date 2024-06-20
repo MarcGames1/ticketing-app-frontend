@@ -1,7 +1,7 @@
 import {Idepartment} from "@/declarations/deptartment";
 
 export interface Iuser {
-    department:Idepartment,
+    department?:Idepartment,
     email: string,
     firstName: string,
     id: number,

@@ -5,7 +5,7 @@ import {useRouter} from "next/navigation";
 
 export default function LoginPage() {
   const router = useRouter()
-  const user = useCurrentUser()
+  const [user] = useCurrentUser()
   if(user) {
    setTimeout(()=>{
      router.push('/')

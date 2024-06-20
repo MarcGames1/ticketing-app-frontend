@@ -1,6 +1,9 @@
 import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig} from 'axios';
-import {getCurrentUserId, handleApiResponse} from "@/lib/ApiClient/utils";
+import {getAuth, handleApiResponse} from "@/lib/ApiClient/utils";
+import Auth from "@/entities/Auth";
+import {Iauth} from "@/declarations/auth";
 
+const auth = getAuth()
 
 export class ApiClientError extends AxiosError {
     status?: number | undefined;
@@ -41,22 +44,99 @@ class ApiClient {
 
     private baseUrl: string;
     axiosInstance: AxiosInstance;
+    private failedQueue: any[];
+    private isRefreshing:boolean
     constructor(baseUrl: string) {
         this.baseUrl = baseUrl;
+        this.failedQueue = [];
+        this.isRefreshing = false;
         this.axiosInstance = axios.create({
             baseURL: this.baseUrl, withCredentials: true, // todo change it
         } );
-        const userID = getCurrentUserId()
+        this._initInterceptors()
+
+
+    }
+
+    private _initInterceptors() {
         this.axiosInstance.interceptors.request.use(
-            function (config) {
-               if(userID){
-                   config.headers.set("userId", userID )
-               }
-                // config.headers.set("Access-Control-Expose-Headers", "Origin")
-                // config.headers.set("Origin", "http://localhost:3000")
+            (config) => {
+                const auth = getAuth()
+                if (auth) {
+                    config.headers['Authorization'] = `Bearer ${auth.accessToken}`;
+                }
                 return config;
+            },
+            (error) => Promise.reject(error)
+        );
+
+        this.axiosInstance.interceptors.response.use(
+            (response) => response,
+            async (error) => {
+                const originalRequest = error.config;
+                if (error.response?.status === 401 && !originalRequest._retry) {
+                    if (this.isRefreshing) {
+                        return new Promise((resolve, reject) => {
+                            this.failedQueue.push({ resolve, reject });
+                        })
+                            .then(token => {
+                                originalRequest.headers['Authorization'] = 'Bearer ' + token;
+                                return this.axiosInstance(originalRequest);
+                            })
+                            .catch(err => {
+                                return Promise.reject(err);
+                            });
+                    }
+
+                    originalRequest._retry = true;
+                    this.isRefreshing = true;
+
+                    return new Promise((resolve, reject) => {
+                        const auth = getAuth()
+                        if (!auth) return reject(new Error('No auth instance available'));
+
+                        this.refreshToken().then((token) => {
+                            auth.updateTokens(token);
+                            this.processQueue(null, token);
+                            resolve(this.axiosInstance(originalRequest));
+                        }).catch((err) => {
+                            this.processQueue(err, null);
+                            reject(err);
+                        }).finally(() => {
+                            this.isRefreshing = false;
+                        });
+                    });
+                }
+                return Promise.reject(error);
             }
-        )
+        );
+    }
+
+    private async refreshToken(): Promise<Partial<Iauth>> {
+      if(!auth) {return getAuth() as Auth }
+        const refreshToken = auth.refreshToken;
+        try {
+            const response = await axios.post(`${this.baseUrl}/api/auth/refreshToken`, { refreshToken });
+            if (response.status === 200) {
+                const {accessToken, refreshToken} = response.data;
+
+                return {accessToken, refreshToken}
+            } else {
+                throw new Error('Unable to refresh token');
+            }
+        } catch (error) {
+            throw new ApiClientError('Unable to refresh token');
+        }
+    }
+    private processQueue(error: any, token: Partial<Iauth> | null = null) {
+        this.failedQueue.forEach(prom => {
+            if (error) {
+                prom.reject(error);
+            } else {
+                prom.resolve(token?.accessToken || '');
+            }
+        });
+        this.failedQueue = [];
     }
 
     get(url: string ,config = {}) {

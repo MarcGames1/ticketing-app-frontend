@@ -1,18 +1,17 @@
 'use client'
 import {useState} from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
-
-
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {toast} from "@/components/ui/use-toast";
+import {useRouter} from "next/navigation";
 
 
 import {z} from "zod";
-
-import { Iuser} from "@/declarations/users"; // Assume FormSchema is exported from another file
 import api, {ApiClientError} from "@/lib/ApiClient";
 import useLocalStorage from "@/hooks/useLocalStorage";
+import {handleSigninResponse, IloginResponseData} from "@/lib/utils";
+import {LocalStoredData} from "@/declarations/localStorage";
+import Auth from "@/entities/Auth";
 
 export const FormSchema = z.object({
     email: z.string().email( {
@@ -21,7 +20,8 @@ export const FormSchema = z.object({
     password: z.string().min(2, { message: "Password must have at least 6 caracters",}).max(50, { message: "Too Manny Caracters for a password don't worry about it no one will hack your account",})
 })
 export function useLoginForm() {
-    const [user, setUser] = useLocalStorage("user");
+    const [user, setUser] = useLocalStorage(LocalStoredData.user);
+    const [auth, setAuth] = useLocalStorage(LocalStoredData.auth)
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     const form = useForm({
@@ -50,29 +50,34 @@ export function useLoginForm() {
             });
         }
         else {
-            const userDetails =res.data as unknown as Iuser
+            const loginResData =res.data as unknown as IloginResponseData
             try {
-                console.log("Writing in Local Storage?? ==> ")
-                setUser(userDetails)
+                const {auth, user} = handleSigninResponse(loginResData)
+                setUser(user)
+                setAuth(auth)
+               Auth.getInstance(auth)
 
             }
             catch (e){
                 throw e
             }
 
-            console.table(userDetails)
 
 
-           setTimeout(()=>{
-               router.push('/')
-           },300)
-            toast({
-                title: 'Logged in Successfully',
-                description: `Welcome ${userDetails.lastName}`,
-            });
+
+
+            if(user){
+                setTimeout(()=>{
+                    router.push('/')
+                },300)
+                toast({
+                    title: 'Logged in Successfully',
+                    description: `Welcome ${user.firstName}`,
+                });
+            }
+
         }
         setIsLoading(false);
-        router.push('/');
     };
 
     return { form, onSubmit, isLoading };

@@ -1,6 +1,6 @@
 import {Idepartment} from "@/declarations/deptartment";
-import api from "@/lib/ApiClient";
 import {handleApiResponse} from "@/lib/ApiClient/utils";
+import api from "@/lib/ApiClient";
 
 
 export default class Department implements Idepartment {

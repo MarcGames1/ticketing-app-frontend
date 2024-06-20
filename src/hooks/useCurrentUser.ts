@@ -1,15 +1,20 @@
 'use client'
 import {Iuser} from "@/declarations/users";
-import {useRouter} from "next/navigation";
 import useLocalStorage from "@/hooks/useLocalStorage";
+import {LocalStoredData} from "@/declarations/localStorage";
+import {clearLocalStorage} from "@/lib/ApiClient/utils";
 
 export function useCurrentUser() {
-    const router = useRouter()
-    const [user, setUserToLS] = useLocalStorage("user");
+
+    const [user, setUserToLS] = useLocalStorage(LocalStoredData.user);
     if(user && user?.id){
-        return user as Iuser
+        return [user as Iuser, setUserToLS] as const
+
+    }else {
+        clearLocalStorage()
+        return [undefined, setUserToLS] as const
+
     }
-        return undefined
 
     }
 

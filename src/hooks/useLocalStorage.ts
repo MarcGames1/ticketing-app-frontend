@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
+import {LocalStoredData} from "@/declarations/localStorage";
 
 const isBrowser = typeof window !== "undefined";
 
-const useLocalStorage = (key:string, initial = null) => {
+const useLocalStorage = (key:LocalStoredData, initial = null) => {
     const [value, setValue] = useState(() => {
         if (isBrowser) {
             const saved = window.localStorage.getItem(key);

@@ -4,14 +4,17 @@ import Button from "@/components/shared/Button";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import {useRouter} from "next/navigation";
 import {toast} from "@/components/ui/use-toast";
+import {LocalStoredData} from "@/declarations/localStorage";
+import {clearLocalStorage} from "@/lib/ApiClient/utils";
 
 const LoggedUserDetails = () => {
-    const [_ ,setValue]= useLocalStorage('user')
-    const user = useCurrentUser()
+    const [_ ,setValue]= useLocalStorage(LocalStoredData.user)
+    const [user] = useCurrentUser()
     const router = useRouter()
 
     const logoutHandler = () =>{
         setValue(undefined)
+        clearLocalStorage()
         toast({title:"Logging you out", content:'redirecting to login page ...'})
         setTimeout(()=>{
             router.push('/login')

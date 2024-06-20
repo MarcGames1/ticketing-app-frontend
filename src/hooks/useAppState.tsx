@@ -16,7 +16,7 @@ export interface UseAppStateReturn {
 }
 const useAppState =(): UseAppStateReturn=>{
     const [appState, setAppState] = useState<AppState>(AppState.Tickets_Board)
-    const user = useCurrentUser()
+    const [user] = useCurrentUser()
     const router = useRouter()
     if(!user){
         toast({title:"No user Logged in", description:"Please Log In", variant: 'destructive'})
