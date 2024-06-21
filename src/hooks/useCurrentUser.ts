@@ -2,7 +2,7 @@
 import {Iuser} from "@/declarations/users";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import {LocalStoredData} from "@/declarations/localStorage";
-import {clearLocalStorage} from "@/lib/ApiClient/utils";
+
 
 export function useCurrentUser() {
 
@@ -11,7 +11,7 @@ export function useCurrentUser() {
         return [user as Iuser, setUserToLS] as const
 
     }else {
-        clearLocalStorage()
+
         return [undefined, setUserToLS] as const
 
     }

@@ -2,7 +2,7 @@ import Iticket, {ITicketByStatus, TaskStatus} from "@/declarations/tickets";
 import IAttachment from "@/declarations/attachment";
 import ITask from "@/declarations/task";
 import {handleApiResponse} from "@/lib/ApiClient/utils";
-import api from "@/lib/ApiClient";
+import api, {ApiClientError, ApiClientSuccess} from "@/lib/ApiClient";
 
 export default class Ticket implements Iticket {
     constructor(data:{attachments: IAttachment[], content: string, id: string | number, tasks: ITask[], title: string, status:TaskStatus}) {

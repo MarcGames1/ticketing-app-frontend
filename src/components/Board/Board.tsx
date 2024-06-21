@@ -38,7 +38,6 @@ const BoardComponent: FC = () => {
 
        try {
            const prevState= [...allTickets];
-           // remove moved ticket from previous collumn
            allTickets[sourceColumnIndex].tickets
                .splice(allTickets[sourceColumnIndex].tickets
                    .findIndex(t =>t.id === movedTicket.id), 1)
@@ -53,15 +52,6 @@ const BoardComponent: FC = () => {
                setIsDataUpdated(false)
            }
            else  toast({title:"Success!", description:"Status Updated"})
-               // res
-               //     .catch(e =>{
-               //     toast({title:"Error in Server", variant: "destructive", description:e.message})
-               //     setAllTickets(prevState)
-               //     throw e
-               // })
-               // .then((e)=>{
-               //     toast({title:"Success!", description:"Status Updated"})
-               // })
 
 
        } catch (e) {

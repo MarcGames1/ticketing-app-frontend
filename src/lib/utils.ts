@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge"
 import {Iuser} from "@/declarations/users";
 import {Iauth} from "@/declarations/auth";
 import {undefined} from "zod";
-import {clearLocalStorage} from "@/lib/ApiClient/utils";
+
 import Auth from "@/entities/Auth";
 import {toast} from "@/components/ui/use-toast";
 
@@ -11,9 +11,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const redirectUser=() =>{
-  // todo
-}
+
 export interface IloginResponseData extends Iuser{
   accessToken:string,
   refreshToken:string,

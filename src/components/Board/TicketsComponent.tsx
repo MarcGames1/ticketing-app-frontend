@@ -11,12 +11,15 @@ enum ActiveModal{
     updateModal="updateModal",
     deleteModal="deleteModal"
 }
+
+
 // eslint-disable-next-line react/display-name
 const TicketsComponent = forwardRef<HTMLDivElement, TicketComponentProps>(({ data, index, ...props }, ref) => {
     const [state, setState] = useState(ActiveModal.openTicketModal)
+
     const { currentModal, setActiveModal } = useActiveModal({
         data,
-        onConfirm: () => console.log("Confirm action"),
+        onConfirm: () => handleConfirm,
         onClose: () => {
             setOpenTicketModal(false)
             setActiveModal(ActiveModal.openTicketModal)
@@ -26,6 +29,11 @@ const TicketsComponent = forwardRef<HTMLDivElement, TicketComponentProps>(({ dat
     const [updateModal, setUpdateModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     // const [activeModal, setActiveModal] = useState(ActiveModal.openTicketModal)
+
+
+    const handleConfirm = async () =>{
+
+    }
 
     function handleTaskModalClose() {
         if(!updateModal || !deleteModal){

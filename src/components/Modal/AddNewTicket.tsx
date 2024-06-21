@@ -22,7 +22,7 @@ const AddNewBoardModal = ({onClose}:{onClose:any}) => {
     return (
         <Formik
             initialValues={{
-                name: "",
+                title: "",
                 content: "",
             }}
             validationSchema={validate}

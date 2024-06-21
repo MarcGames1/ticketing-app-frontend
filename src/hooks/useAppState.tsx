@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useCurrentUser} from "@/hooks/useCurrentUser";
 import {EmployeeRole} from "@/declarations/users";
 import {toast} from "@/components/ui/use-toast";
@@ -18,14 +18,9 @@ const useAppState =(): UseAppStateReturn=>{
     const [appState, setAppState] = useState<AppState>(AppState.Tickets_Board)
     const [user] = useCurrentUser()
     const router = useRouter()
-    if(!user){
-        toast({title:"No user Logged in", description:"Please Log In", variant: 'destructive'})
-        setTimeout(()=>{
-            router.push('/login')
-        },300)
-        return {appState, updateAppState:setAppState, navigationData}
-    }
+
     const updateAppState = (state:AppState)=>{
+        if(!user){throw new Error("No user in UseAppState")}
         switch (user.role){
             case EmployeeRole.SUPERVISOR:
                 setAppState(state)
@@ -41,6 +36,21 @@ const useAppState =(): UseAppStateReturn=>{
                 break
         }
     }
+
+
+    useEffect(()=>{
+    const checkUser = ()=>{
+        if(!user){
+            toast({title:"No user Logged in", description:"Please Log In", variant: 'destructive'})
+            setTimeout(()=>{
+                router.push('/login')
+            },300)
+            return {appState, updateAppState:setAppState, navigationData}
+        }
+    }
+    checkUser()
+}, [user])
+
     return {appState, updateAppState, navigationData}
 }
 

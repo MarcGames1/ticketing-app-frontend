@@ -4,9 +4,6 @@ import {useRouter} from "next/navigation";
 import AppLayout from "@/components/Layout/AppLayout";
 
 import MainComponent from "@/components/MainComponent";
-import useLocalStorage from "@/hooks/useLocalStorage";
-import {LocalStoredData} from "@/declarations/localStorage";
-import {Iuser} from "@/declarations/users";
 import {useCurrentUser} from "@/hooks/useCurrentUser";
 
 export default function Home() {

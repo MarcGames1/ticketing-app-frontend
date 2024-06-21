@@ -64,8 +64,8 @@ class Auth {
         if (tokens.accessToken !== undefined) {
             this._accessToken = tokens.accessToken;
         }
-        if (tokens.refreshToken !== undefined) {
-            this._refreshToken = tokens.refreshToken;
+        if (tokens.idToken !== undefined) {
+            this._idToken = tokens.idToken;
         }
     }
 }

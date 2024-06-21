@@ -1,9 +1,9 @@
 import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig} from 'axios';
-import {getAuth, handleApiResponse} from "@/lib/ApiClient/utils";
+import {getAuth } from "@/lib/ApiClient/utils";
 import Auth from "@/entities/Auth";
 import {Iauth} from "@/declarations/auth";
 
-const auth = getAuth()
+
 
 export class ApiClientError extends AxiosError {
     status?: number | undefined;
@@ -49,9 +49,9 @@ class ApiClient {
     constructor(baseUrl: string) {
         this.baseUrl = baseUrl;
         this.failedQueue = [];
-        this.isRefreshing = false;
+        this.isRefreshing = true;
         this.axiosInstance = axios.create({
-            baseURL: this.baseUrl, withCredentials: true, // todo change it
+            baseURL: this.baseUrl, withCredentials: true,
         } );
         this._initInterceptors()
 
@@ -62,9 +62,13 @@ class ApiClient {
         this.axiosInstance.interceptors.request.use(
             (config) => {
                 const auth = getAuth()
+                console.log('interceptor data')
+                console.log({auth, config})
+                console.log(String( config.url  && config.url.includes('refreshToken')))
                 if (auth) {
                     config.headers['Authorization'] = `Bearer ${auth.idToken}`;
                 }
+
                 return config;
             },
             (error) => Promise.reject(error)
@@ -74,6 +78,7 @@ class ApiClient {
             (response) => response,
             async (error) => {
                 const originalRequest = error.config;
+                console.log("Original Request and Error.config",originalRequest, error.config)
                 if (error.response?.status === 401 && !originalRequest._retry) {
                     if (this.isRefreshing) {
                         return new Promise((resolve, reject) => {
@@ -113,16 +118,18 @@ class ApiClient {
     }
 
     private async refreshToken(): Promise<Partial<Iauth>> {
+        const auth = getAuth()
       if(!auth) {return getAuth() as Auth }
-        const refreshToken = auth.refreshToken;
+
+        const {accessToken, refreshToken} = auth
         try {
-            const response = await axios.post(`${this.baseUrl}/api/auth/refreshToken`, { refreshToken });
+            const response = await axios.post(`${this.baseUrl}/api/auth/refreshToken`, { refreshToken, accessToken });
             if (response.status === 200) {
                 const {accessToken, idToken} = response.data;
 
                 return {accessToken, idToken}
             } else {
-                throw new Error('Unable to refresh token');
+                throw new ApiClientError('Unable to refresh token');
             }
         } catch (error) {
             throw new ApiClientError('Unable to refresh token');
@@ -130,10 +137,15 @@ class ApiClient {
     }
     private processQueue(error: any, token: Partial<Iauth> | null = null) {
         this.failedQueue.forEach(prom => {
+            console.log("Processing failed Queue")
             if (error) {
                 prom.reject(error);
+                console.log("prom.reject")
+                console.table(prom)
             } else {
                 prom.resolve(token?.idToken || '');
+                console.log("prom.resolve")
+                console.table(prom)
             }
         });
         this.failedQueue = [];
@@ -194,8 +206,32 @@ class ApiClient {
                 withCredentials: true,
 
             });
+            if(response.status === 401) {
+              const auth =  await this.refreshToken()
+                this.refreshToken()
+                this.isRefreshing = false
+                this.axiosInstance.interceptors.request.use(
+                    (config) => {
 
-            if (response.status >= 400 && response.status <= 499) {
+                        if(auth){
+                            config.headers['Authorization'] = `Bearer ${auth.idToken}`;
+                        }
+                        console.log('interceptor data')
+                        console.table({auth, config})
+                        console.log(String( config.url  && config.url.includes('refreshToken')))
+                        if (auth && config && config.url  &&  !config.url.includes('refreshToken')) {
+                            config.headers['Authorization'] = `Bearer ${auth.idToken}`;
+                        }
+
+                        return config;
+                    },
+                    (error) => Promise.reject(error)
+                );
+
+                console.log(" HERE IS 401 RES STATUS!")
+
+            }
+            if (response.status === 400 || response.status >= 402 && response.status <= 499) {
                 return new ApiClientError(String(response.data));
             }
             else if(response.status >= 200 && response.status <= 399){
@@ -204,7 +240,7 @@ class ApiClient {
             }
             else {
                 return new ApiClientError(
-                    String(response?.statusText || 'Eroare Server'),
+                    String(response?.statusText || 'Server Error'),
                     response.status
                 );
             }
