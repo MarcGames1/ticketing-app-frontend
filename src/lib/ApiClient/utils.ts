@@ -23,7 +23,7 @@ export async function handleApiResponse<T>(promise: Promise<ApiClientSuccess<T> 
 
 export function getAuth ():Auth | undefined {
     if( typeof window !== 'undefined' && typeof window.localStorage !== 'undefined'){
-       const authData = localStorage.getItem(LocalStoredData.auth)
+       const authData = localStorage.getItem('auth')
 
        return authData ?  Auth.getInstance(authData) : undefined
     } else return undefined

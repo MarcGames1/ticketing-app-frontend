@@ -20,14 +20,14 @@ export default class User implements Iuser{
     role: EmployeeRole;
 
     public static async Create (data: {data:Partial<Iuser>}):Promise<User> {
-        const res= api.post('/api/users', data)
+        const res= api.post<Iuser>('/api/users', data as unknown as Iuser)
         const resData = await handleApiResponse<Iuser>(res)
         return new User(resData)
     }
 
     public static async Update (data: Partial<Iuser>) {
-        const res =  api.patch(`/api/users/${data.id}`, JSON.stringify(data));
-        const resData = await handleApiResponse<Iuser>(res);
+        const res =  api.patch<string>(`/api/users/${data.id}`, JSON.stringify(data));
+        const resData = await handleApiResponse<Iuser>(res as Promise<any>);
         return new User(resData);
     }
 

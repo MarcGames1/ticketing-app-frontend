@@ -1,8 +1,9 @@
-import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig} from 'axios';
-import {getAuth } from "@/lib/ApiClient/utils";
+import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios';
+import {getAuth} from "@/lib/ApiClient/utils";
 import Auth from "@/entities/Auth";
 import {Iauth} from "@/declarations/auth";
-
+import Any = jasmine.Any;
+import {headers} from "next/headers";
 
 
 export class ApiClientError extends AxiosError {
@@ -21,7 +22,7 @@ export class ApiClientError extends AxiosError {
 
 
 
-export class ApiClientSuccess<T> {
+export class ApiClientSuccess<T = any> {
     status: number | undefined;
     message?: string;
     data:T;
@@ -151,7 +152,7 @@ class ApiClient {
         this.failedQueue = [];
     }
 
-    get(url: string ,config = {}) {
+    get<T=any>(url: string ,config = {}): Promise<ApiClientSuccess<T> | ApiClientError> {
         console.log("Get ",this.baseUrl + url,)
         return this.request({
             ...config,
@@ -162,7 +163,7 @@ class ApiClient {
         });
     }
 
-    post(url: string, data: Object | FormData, config: AxiosRequestConfig<any> = {}) {
+    post<T = any>(url: string, data: T, config: AxiosRequestConfig<any> = {}): Promise<ApiClientSuccess<T> | ApiClientError> {
         console.log("POST ",this.baseUrl + url,)
         return this.request({
             ...config,
@@ -172,7 +173,7 @@ class ApiClient {
         });
     }
 
-    put(url: string, data: string, config: AxiosRequestConfig<any> = {}) {
+    put<T = any>(url: string, data:T, config: AxiosRequestConfig<any> = {}): Promise<ApiClientSuccess<T> | ApiClientError> {
         return this.request({
             ...config,
             method: 'put',
@@ -180,7 +181,7 @@ class ApiClient {
             data,
         });
     }
-    patch(url: string, data: string, config: AxiosRequestConfig<any> = {}) {
+    patch<T = any>(url: string, data: T, config: AxiosRequestConfig<any> = {}): Promise<ApiClientSuccess<T> | ApiClientError> {
         return this.request({
             ...config,
             method: 'patch',
@@ -189,7 +190,7 @@ class ApiClient {
         });
     }
 
-    delete(url: string, config: AxiosRequestConfig<any> = {}) {
+    delete(url: string, config: AxiosRequestConfig<any> = {}): Promise<ApiClientSuccess<any> | ApiClientError> {
         return this.request({
             ...config,
             method: 'delete',
@@ -197,7 +198,7 @@ class ApiClient {
         });
     }
 
-    async request(config: AxiosRequestConfig<any>) {
+    async request<T = any>(config: AxiosRequestConfig<T>) : Promise<ApiClientSuccess<T> | ApiClientError>{
 
         try {
             const response: AxiosResponse = await this.axiosInstance({
@@ -208,16 +209,16 @@ class ApiClient {
             });
             if(response.status === 401) {
               const auth =  await this.refreshToken()
-                this.refreshToken()
-                this.isRefreshing = false
-                this.axiosInstance.interceptors.request.use(
+                const previousConfig = config
+
+                this.isRefreshing &&     this.axiosInstance.interceptors.request.use(
                     (config) => {
 
                         if(auth){
                             config.headers['Authorization'] = `Bearer ${auth.idToken}`;
                         }
                         console.log('interceptor data')
-                        console.table({auth, config})
+                        console.log({auth, config})
                         console.log(String( config.url  && config.url.includes('refreshToken')))
                         if (auth && config && config.url  &&  !config.url.includes('refreshToken')) {
                             config.headers['Authorization'] = `Bearer ${auth.idToken}`;
@@ -229,6 +230,16 @@ class ApiClient {
                 );
 
                 console.log(" HERE IS 401 RES STATUS!")
+
+               // await this.refreshToken()
+
+
+
+                this.isRefreshing = false
+                return  this.request({...previousConfig, headers:{
+                    ...previousConfig.headers,
+                    "Authorization": `Bearer ${auth.idToken}`
+                    }})
 
             }
             if (response.status === 400 || response.status >= 402 && response.status <= 499) {

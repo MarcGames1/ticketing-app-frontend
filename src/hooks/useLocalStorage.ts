@@ -1,14 +1,24 @@
 import { useEffect, useState } from "react";
-import {LocalStoredData} from "@/declarations/localStorage";
+import Auth from "@/entities/Auth";
+import User from "@/entities/user";
+export enum LocalStoredData {
+    auth='auth',
+    user="user"
+}
 
 const isBrowser = typeof window !== "undefined";
 
-const useLocalStorage = (key:LocalStoredData, initial = null) => {
-    const [value, setValue] = useState(() => {
+function useLocalStorage<T>(key: LocalStoredData, initial: T | undefined = undefined) {
+    const [value, setValue] = useState<T | undefined>(() => {
         if (isBrowser) {
             const saved = window.localStorage.getItem(key);
-            if (saved !== null) {
-                return JSON.parse(saved);
+            if (saved !== null && saved !== undefined) {
+                const parsed = JSON.parse(saved);
+                if (key === LocalStoredData.auth) {
+                    return Auth.getInstance(parsed) as T;
+                } else if (key === LocalStoredData.user) {
+                    return new User(parsed) as T;
+                }
             }
         }
         return initial;
@@ -21,7 +31,7 @@ const useLocalStorage = (key:LocalStoredData, initial = null) => {
       else window.localStorage.setItem(key, JSON.stringify(value));
     }, [key, value]);
 
-    return [value, setValue];
+    return [value, setValue] as const;
 };
 
 export default useLocalStorage;

@@ -21,7 +21,7 @@ const { form, onSubmit, isLoading } = useLoginForm()
 
     return (
         <div className={'flex flex-col items-center justify-items-center place-items-center '}>
-            <Image src={'/brand/logo.png'} width={300} height={300} alt={'app logo'} />
+            <Image src={'/brand/logo.png'} loading={'eager'} width={300} height={300} alt={'app logo'} />
             <Form {...form}>
                 <form method={'POST'} onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 ">
                     <FormField
@@ -51,7 +51,10 @@ const { form, onSubmit, isLoading } = useLoginForm()
                         )}
                     />
                     {/* eslint-disable-next-line react/jsx-no-undef */}
-                    <Button disabled={isLoading}  type="submit">{isLoading ? <span className={'animate-spin'}><CgSpinnerTwoAlt  size={'1.5rem'} color={'currentColor'} />
+                    <Button disabled={isLoading}  type="submit">
+                        {isLoading ?
+                        <span className={'animate-spin'}>
+                            <CgSpinnerTwoAlt  size={'1.5rem'} color={'currentColor'} />
                 </span> : <>Login</>}</Button>
                 </form>
             </Form>

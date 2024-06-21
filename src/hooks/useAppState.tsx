@@ -1,8 +1,10 @@
 import {useEffect, useState} from "react";
-import {useCurrentUser} from "@/hooks/useCurrentUser";
 import {EmployeeRole} from "@/declarations/users";
 import {toast} from "@/components/ui/use-toast";
 import {useRouter} from "next/navigation";
+import User from "@/entities/user";
+import {useUserContext} from "@/context/UserContext";
+
 export enum AppState {
     Tickets_Board ="Tickets Board",
     Departments="Departments",
@@ -16,11 +18,11 @@ export interface UseAppStateReturn {
 }
 const useAppState =(): UseAppStateReturn=>{
     const [appState, setAppState] = useState<AppState>(AppState.Tickets_Board)
-    const [user] = useCurrentUser()
+    const {user} = useUserContext()
     const router = useRouter()
-
+console.log(user)
     const updateAppState = (state:AppState)=>{
-        if(!user){throw new Error("No user in UseAppState")}
+        if( !user ) {throw new Error("No user in UseAppState")}
         switch (user.role){
             case EmployeeRole.SUPERVISOR:
                 setAppState(state)

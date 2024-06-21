@@ -10,6 +10,14 @@ const nextConfig = {
             },
         ],
     },
+    // async rewrites() {
+    //     return [
+    //         {
+    //             source: '/api_v2:path*', // Orice cerere către `/api/*`
+    //             destination: 'http://localhost:8080:path*', // Redirecționează către serverul backend
+    //         },
+    //     ];
+    // },
 };
 
 export default nextConfig;

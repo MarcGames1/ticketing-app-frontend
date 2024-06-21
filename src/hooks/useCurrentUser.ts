@@ -1,14 +1,14 @@
 'use client'
 import {Iuser} from "@/declarations/users";
-import useLocalStorage from "@/hooks/useLocalStorage";
-import {LocalStoredData} from "@/declarations/localStorage";
+import useLocalStorage,{LocalStoredData} from "@/hooks/useLocalStorage";
+import User from "@/entities/user";
 
 
 export function useCurrentUser() {
 
-    const [user, setUserToLS] = useLocalStorage(LocalStoredData.user);
-    if(user && user?.id){
-        return [user as Iuser, setUserToLS] as const
+    const [user, setUserToLS] = useLocalStorage<User>(LocalStoredData.user);
+    if(user instanceof User){
+        return user
 
     }else {
 

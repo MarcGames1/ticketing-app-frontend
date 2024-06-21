@@ -1,25 +1,26 @@
 'use client'
-import {useCurrentUser} from "@/hooks/useCurrentUser";
 import Button from "@/components/shared/Button";
-import useLocalStorage from "@/hooks/useLocalStorage";
+import useLocalStorage, {LocalStoredData} from "@/hooks/useLocalStorage";
 import {useRouter} from "next/navigation";
-import {toast} from "@/components/ui/use-toast";
-import {LocalStoredData} from "@/declarations/localStorage";
-import {clearLocalStorage} from "@/lib/ApiClient/utils";
-import Auth from "@/entities/Auth";
 import Actions from "@/ActionHandlers/Actions";
+import {useEffect, useState} from "react";
+import User from "@/entities/user";
+import {useUserContext} from "@/context/UserContext";
 
 const LoggedUserDetails = () => {
-    const [_ ,setValue]= useLocalStorage(LocalStoredData.user)
-    const [user] = useCurrentUser()
+    const {user, setUser} = useUserContext()
     const router = useRouter()
 
-    const logoutHandler = () =>{
-        Actions.Logout()
-        setValue(undefined)
-        setTimeout(()=>{
+    useEffect(() => {
+       !user && setTimeout(()=>{
             router.push('/login')
         },3)
+    }, [user]);
+    const logoutHandler = () =>{
+        Actions.Logout()
+        setUser(undefined)
+
+
     }
     return user && <div
         className={'rounded flex flex-col flex-wrap p-4 w-4/5 mx-6 space-x-6 justify-center items-center bg-lightGrey dark:text-mediumGrey  dark:bg-veryDarkGrey'}>

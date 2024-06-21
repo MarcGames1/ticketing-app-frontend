@@ -1,7 +1,6 @@
 import Ticket from "@/entities/ticket";
 import {ITicketByStatus, TaskStatus} from "@/declarations/tickets";
 import {useEffect, useState} from "react";
-import useLocalStorage from "@/hooks/useLocalStorage";
 
 
 const useTicketsByStatus =  (status?: TaskStatus, isDataRefreshed=true) => {
