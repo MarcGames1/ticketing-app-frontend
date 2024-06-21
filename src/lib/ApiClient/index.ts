@@ -75,47 +75,47 @@ class ApiClient {
             (error) => Promise.reject(error)
         );
 
-        this.axiosInstance.interceptors.response.use(
-            (response) => response,
-            async (error) => {
-                const originalRequest = error.config;
-                console.log("Original Request and Error.config",originalRequest, error.config)
-                if (error.response?.status === 401 && !originalRequest._retry) {
-                    if (this.isRefreshing) {
-                        return new Promise((resolve, reject) => {
-                            this.failedQueue.push({ resolve, reject });
-                        })
-                            .then(token => {
-                                originalRequest.headers['Authorization'] = 'Bearer ' + token;
-                                return this.axiosInstance(originalRequest);
-                            })
-                            .catch(err => {
-                                return Promise.reject(err);
-                            });
-                    }
-
-                    originalRequest._retry = true;
-                    this.isRefreshing = true;
-
-                    return new Promise((resolve, reject) => {
-                        const auth = getAuth()
-                        if (!auth) return reject(new Error('No auth instance available'));
-
-                        this.refreshToken().then((token) => {
-                            auth.updateTokens(token);
-                            this.processQueue(null, token);
-                            resolve(this.axiosInstance(originalRequest));
-                        }).catch((err) => {
-                            this.processQueue(err, null);
-                            reject(err);
-                        }).finally(() => {
-                            this.isRefreshing = false;
-                        });
-                    });
-                }
-                return Promise.reject(error);
-            }
-        );
+        // this.axiosInstance.interceptors.response.use(
+        //     (response) => response,
+        //     async (error) => {
+        //         const originalRequest = error.config;
+        //         console.log("Original Request and Error.config",originalRequest, error.config)
+        //         if (error.response?.status === 401 && !originalRequest._retry) {
+        //             if (this.isRefreshing) {
+        //                 return new Promise((resolve, reject) => {
+        //                     this.failedQueue.push({ resolve, reject });
+        //                 })
+        //                     .then(token => {
+        //                         originalRequest.headers['Authorization'] = 'Bearer ' + token;
+        //                         return this.axiosInstance(originalRequest);
+        //                     })
+        //                     .catch(err => {
+        //                         return Promise.reject(err);
+        //                     });
+        //             }
+        //
+        //             originalRequest._retry = true;
+        //             this.isRefreshing = true;
+        //
+        //             return new Promise((resolve, reject) => {
+        //                 const auth = getAuth()
+        //                 if (!auth) return reject(new Error('No auth instance available'));
+        //
+        //                 this.refreshToken().then((token) => {
+        //                     auth.updateTokens(token);
+        //                     this.processQueue(null, token);
+        //                     resolve(this.axiosInstance(originalRequest));
+        //                 }).catch((err) => {
+        //                     this.processQueue(err, null);
+        //                     reject(err);
+        //                 }).finally(() => {
+        //                     this.isRefreshing = false;
+        //                 });
+        //             });
+        //         }
+        //         return Promise.reject(error);
+        //     }
+        // );
     }
 
     private async refreshToken(): Promise<Partial<Iauth>> {
@@ -213,7 +213,7 @@ class ApiClient {
 
                 this.isRefreshing &&     this.axiosInstance.interceptors.request.use(
                     (config) => {
-
+                        this.isRefreshing = false
                         if(auth){
                             config.headers['Authorization'] = `Bearer ${auth.idToken}`;
                         }
@@ -229,13 +229,9 @@ class ApiClient {
                     (error) => Promise.reject(error)
                 );
 
-                console.log(" HERE IS 401 RES STATUS!")
+               
 
-               // await this.refreshToken()
-
-
-
-                this.isRefreshing = false
+                this.isRefreshing = true
                 return  this.request({...previousConfig, headers:{
                     ...previousConfig.headers,
                     "Authorization": `Bearer ${auth.idToken}`
