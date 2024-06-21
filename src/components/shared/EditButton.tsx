@@ -1,14 +1,10 @@
 import Image from "next/image";
-import { useRef, useState, MouseEventHandler } from "react";
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import useOnClickOutside from "@/hooks/useOnClickOutside";
-import Modal from "@/components/Modal";
-import UpdateTicketModal from "@/components/Modal/UpdateTicketModal";
-import DeleteTicketModal from "@/components/Modal/DeleteTicketModal";
+
 import Ticket from "@/entities/ticket";
 import Task from "@/entities/tasks";
-import {instanceOf} from "prop-types";
-
 
 
 interface EditButtonProps {
@@ -29,11 +25,7 @@ const EditButton: React.FC<EditButtonProps> = ({
                                                     data
                                                }) => {
     const [showMenu, setShowMenu] = useState(false);
-    const [showUpdateTicketModal, setShowUpdateTicketModal] = useState(false);
-    const [showDeleteTicketModal, setShowDeleteTicketModal] = useState(false)
 
-    const [showUpdateTaskModal, setShowUpdateTaskModal] =useState(false)
-    const [showDeleteTaskModal, setShowDeleteTaskModal] =useState(false)
     const menuRef = useRef<HTMLDivElement>(null);
 
     useOnClickOutside(menuRef, () => setShowMenu(false));

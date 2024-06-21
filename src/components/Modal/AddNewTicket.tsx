@@ -10,7 +10,11 @@ import {useTickets} from "@/context/TicketsContext";
 import {toast} from "@/components/ui/use-toast";
 
 const AddNewTicketModal = ({onClose}:{onClose:any}) => {
-    const {allTickets, setIsDataUpdated, setAllTickets} = useTickets();
+    const {
+        allTickets,
+        setIsDataUpdated,
+        setAllTickets
+    } = useTickets();
     const validate = Yup.object({
         name: Yup.string().required("Can't be empty"),
 
@@ -26,18 +30,20 @@ const AddNewTicketModal = ({onClose}:{onClose:any}) => {
                 content: "",
             }}
             validationSchema={validate}
-            onSubmit={  async (values, { setSubmitting }) => {
+            onSubmit={  async (values) => {
+                const {title, content} = values
                 let t :Ticket
                 try {
                     console.log('Creating Ticket using', values)
-                     await Ticket.Create(values);
-                    setIsDataUpdated(false);  // Assuming this should trigger some re-fetch or update
-                    onClose();  // Close modal after operation
+                     await Ticket.Create({title, content});
+
                 } catch (error) {
                     console.error("Failed to create ticket:", error);
                 } finally {
                     toast({title:`Ticket Created`,})
-                    setSubmitting(false);  // Reset submission state
+                    setIsDataUpdated(false);
+                    onClose();  // Close modal after operation
+                     // Reset submission state
                 }
             }}
         >

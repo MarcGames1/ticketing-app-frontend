@@ -2,6 +2,10 @@ import { useState, useEffect, ReactNode } from "react";
 import TicketDetailModal from "@/components/Modal/TicketDetailModal";
 import UpdateTicketModal from "@/components/Modal/UpdateTicketModal";
 import DeleteTicketModal from "@/components/Modal/DeleteTicketModal";
+import Ticket from "@/entities/ticket";
+import Actions from "@/ActionHandlers/Actions";
+import {toast} from "@/components/ui/use-toast";
+import {useTickets} from "@/context/TicketsContext";
 
 export enum ActiveModal {
     openTicketModal = "openTicketModal",
@@ -22,6 +26,22 @@ interface UseActiveModalReturn {
 
 const useActiveModal = ({ data, onConfirm, onClose }: UseActiveModalProps): UseActiveModalReturn => {
     const [currentActiveModal, setCurrentActiveModal] = useState<ActiveModal>(ActiveModal.openTicketModal);
+    const {
+        setIsDataUpdated,
+    } = useTickets()
+    function onDeleteConfirm() {
+        Ticket.Delete(data.id)
+            .catch(e =>{
+                toast({title:"Could Not Delete Ticket", variant:"destructive"})
+            })
+            .then(e =>{
+                toast({title:`Ticket Deleted!`})
+            })
+            .finally(()=>{
+                setIsDataUpdated(false)
+                onClose()
+            })
+    }
 
     const renderModal = () => {
         switch (currentActiveModal) {
@@ -33,11 +53,12 @@ const useActiveModal = ({ data, onConfirm, onClose }: UseActiveModalProps): UseA
                 if(onConfirm){
                     return <UpdateTicketModal data={data} onConfirm={onConfirm} close={onClose} />;
                 }
-
+                break
             case ActiveModal.deleteModal:
                 if(onConfirm){
-                   return <DeleteTicketModal title={'Delete Ticket'}  onConfirm={onConfirm} onClose={onClose} />
+                   return <DeleteTicketModal title={'Delete Ticket'}  onConfirm={onDeleteConfirm} onClose={onClose} />
                 }
+                break
 
             default:
                 return null;

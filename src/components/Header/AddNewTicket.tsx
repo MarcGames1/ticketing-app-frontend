@@ -13,7 +13,7 @@ const AddNewTicket = () => {
             {
                 width > 768 ? (
                     <button className="btn btn__primary btn-lg" onClick={() => setOpenTicketModal(true)}>
-                        + Add New Task
+                        + Add New Ticket
                     </button>
                 ) : (
                     <button className="btn btn__primary px-5 flex justify-center items-center" onClick={() => setOpenTicketModal(true)}>

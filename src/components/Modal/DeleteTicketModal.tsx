@@ -7,7 +7,7 @@ interface DeleteTaskModalProps {
 const DeleteTicketModal = ({title, onConfirm, onClose}:DeleteTaskModalProps) => {
     return (
         <div className="space-y-6 w-full mx-auto rounded-md p-6 bg-white dark:bg-darkGrey md:p-8">
-            <h1 className="text-mainRed heading-lg">Delete this task?</h1>
+            <h1 className="text-mainRed heading-lg">Delete this Ticket?</h1>
             <p className="body-lg">Are you sure you want to delete the &apos;{title}&apos; Ticket and its tasks? This action cannot be reversed.</p>
             <div className="flex gap-4">
 
