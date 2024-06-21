@@ -12,11 +12,15 @@ export class ApiClientError extends AxiosError {
 
 
 
+
     constructor (m:string, status?:number | undefined) {
         super(m);
         this.message = m
         this.name = 'ApiClientError';
         this.status = status
+        if(window && localStorage) {
+            localStorage.clear()
+        }
     }
 }
 
@@ -229,9 +233,9 @@ class ApiClient {
                     (error) => Promise.reject(error)
                 );
 
-               
 
-                this.isRefreshing = true
+
+
                 return  this.request({...previousConfig, headers:{
                     ...previousConfig.headers,
                     "Authorization": `Bearer ${auth.idToken}`
@@ -242,7 +246,7 @@ class ApiClient {
                 return new ApiClientError(String(response.data));
             }
             else if(response.status >= 200 && response.status <= 399){
-
+                this.isRefreshing = true
                 return new ApiClientSuccess(response.status, response.statusText, response.data )
             }
             else {

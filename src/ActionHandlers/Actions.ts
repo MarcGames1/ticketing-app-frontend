@@ -6,9 +6,13 @@ import {IloginResponseData} from "@/lib/utils";
 import {AppRouterInstance} from "next/dist/shared/lib/app-router-context.shared-runtime";
 import {Iuser} from "@/declarations/users";
 import {IcreateTicketData, TaskStatus} from "@/declarations/tickets";
+import Ticket from '@/entities/ticket'
+
 
 class Actions {
-    static ChangeTicketStatus: (status: TaskStatus) => void;
+    static async ChangeTicketStatus(status: TaskStatus, id:number | string)  {
+    const res =  await   Ticket.UpdateStatus(id, status)
+    };
 
     static Logout() {
         clearLocalStorage()

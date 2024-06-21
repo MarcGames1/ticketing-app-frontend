@@ -22,14 +22,14 @@ export default class Ticket implements Iticket {
 
     public static async Create (data:Partial<Iticket>):Promise<Ticket> {
         const res = api.post('/api/tickets', data)
-        const resData = await handleApiResponse<Iticket>(res)
+        const resData = await handleApiResponse<Partial<Iticket>>(res) as Iticket
         return new Ticket(resData)
     }
 
     public static async Update(data:Partial<Iticket>):Promise<Ticket> {
-        const res = api.patch('/api/tickets', JSON.stringify(data))
-        const resData = await handleApiResponse<Iticket>(res)
-        return new Ticket(resData)
+        const res = api.patch<string>('/api/tickets', JSON.stringify(data))
+        const resData = await handleApiResponse<string>(res)
+        return new Ticket(JSON.parse(resData))
     }
     public static async UpdateStatus(id:number | string, status :TaskStatus ):Promise<ApiClientSuccess<any> | ApiClientError> {
         return  await api.patch(`/api/tickets/${id}/changeStatus`,

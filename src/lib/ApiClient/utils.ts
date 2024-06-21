@@ -1,5 +1,4 @@
 import {ApiClientError, ApiClientSuccess} from "@/lib/ApiClient/index";
-import {LocalStoredData} from "@/declarations/localStorage";
 import Auth from "@/entities/Auth";
 const isClientSide =  typeof window !== 'undefined' && typeof window.localStorage !== 'undefined'
 

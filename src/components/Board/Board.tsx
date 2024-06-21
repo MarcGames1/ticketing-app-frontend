@@ -1,6 +1,5 @@
 import {FC, useEffect} from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
-import useTicketsByStatus from "@/hooks/useTicketsByStatus";
 import Column from "@/components/Board/Column";
 import TicketsComponent from "@/components/Board/TicketsComponent";
 import { ITicketByStatus } from "@/declarations/tickets";
@@ -14,10 +13,13 @@ import {
     ResizablePanel,
     ResizablePanelGroup,
 } from "@/components/ui/resizable"
+import {useTickets} from "@/context/TicketsContext";
 const BoardComponent: FC = () => {
-    const [allTickets, setIsDataUpdated, setAllTickets] = useTicketsByStatus();
+    const {allTickets, setIsDataUpdated, setAllTickets} = useTickets();
 
-
+    useEffect(() => {
+    setIsDataUpdated(false)
+    }, []);
     const handleOnDragEnd = async (result: DropResult) => {
         const { source, destination } = result;
 

@@ -3,7 +3,8 @@ import StatusDropdown from "@/components/shared/StatusDropdown";
 import Ticket from "@/entities/ticket";
 import Actions from "@/ActionHandlers/Actions";
 import {TaskStatus} from "@/declarations/tickets";
-import Task from "@/entities/tasks";
+import {useEffect, useState} from "react";
+import {useTickets} from "@/context/TicketsContext";
 
 interface TicketModalProps {
     data:Ticket,
@@ -15,8 +16,17 @@ interface TicketModalProps {
 
 
 const TicketDetailModal = ({ data, switchToUpdate, switchToDelete, close}:TicketModalProps) => {
+   const {allTickets, setIsDataUpdated, setAllTickets} = useTickets()
+    const [isUiUpdated, setIsUiUpdated] = useState(true)
+    const changeStatusHandler = async (status:TaskStatus)=>{
+  await   Actions.ChangeTicketStatus(status ,data.id)
+        setIsDataUpdated(false)
+        setIsUiUpdated(false)
+ }
 
-
+    useEffect(() => {
+        setIsDataUpdated(isUiUpdated)
+    }, [isUiUpdated]);
     return (
         <div className="w-full mx-auto rounded-md p-6 bg-white dark:bg-darkGrey md:p-8">
             <div className="flex items-center justify-between gap-4 mb-6">
@@ -49,7 +59,10 @@ const TicketDetailModal = ({ data, switchToUpdate, switchToDelete, close}:Ticket
                 ))
             }
 
-            <StatusDropdown label="Current Status" status={data.status}   data={{status:data.status, id:String(data.id)}} setStatus={Actions.ChangeTicketStatus}/>
+            <StatusDropdown label="Current Status" status={data.status}
+                            data={{status:data.status, id:String(data.id)}}
+                            setStatus={changeStatusHandler}
+            />
 
         </div>
     )

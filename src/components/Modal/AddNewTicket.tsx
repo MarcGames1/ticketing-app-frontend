@@ -6,12 +6,11 @@ import * as Yup from 'yup';
 
 import Ticket from "@/entities/ticket";
 import TextInputArea from "@/components/shared/TextInputArea";
-import {Dispatch, EventHandler, SetStateAction} from "react";
-import useTicketsByStatus from "@/hooks/useTicketsByStatus";
+import {useTickets} from "@/context/TicketsContext";
 
 const AddNewBoardModal = ({onClose}:{onClose:any}) => {
     // const { createBoard } = useBoards(); // TODO create Ticket Hook
-    const [allTickets, setIsDataUpdated, setAllTickets] = useTicketsByStatus();
+    const {allTickets, setIsDataUpdated, setAllTickets} = useTickets();
     const validate = Yup.object({
         name: Yup.string().required("Can't be empty"),
 

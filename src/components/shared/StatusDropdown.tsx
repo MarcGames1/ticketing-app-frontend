@@ -13,6 +13,7 @@ interface StatusDropdownProps {
 const StatusDropdown: FC<StatusDropdownProps> = ({ label = 'Status', data, status, setStatus }) => {
     const [showMenu, setShowMenu] = useState(false);
     const taskStatuses = [TaskStatus.Completed, TaskStatus.Pending, TaskStatus.InProgress];
+    const [selectedTaskStatus, setSelectedTaskStatus] = useState(data.status)
 
     const menuVariants: Variants = {
         closed: {
@@ -39,7 +40,7 @@ const StatusDropdown: FC<StatusDropdownProps> = ({ label = 'Status', data, statu
                     aria-expanded="true"
                     aria-haspopup="true"
                 >
-                    {status}
+                    {selectedTaskStatus}
                     <svg
                         className="-mr-1 ml-2 h-5 w-5 fill-mainPurple"
                         xmlns="http://www.w3.org/2000/svg"
@@ -64,9 +65,9 @@ const StatusDropdown: FC<StatusDropdownProps> = ({ label = 'Status', data, statu
                         {taskStatuses.map((taskStatus, i) => (
                             <a
                                 key={i}
-                                href="#"
                                 onClick={() => {
                                     setStatus(taskStatus);
+                                    setSelectedTaskStatus(taskStatus)
                                     setShowMenu(false);
                                 }}
                                 className="text-mediumGrey block px-4 py-2 text-sm hover:text-mainPurple hover:bg-mainPurple dark:hover:bg-white hover:bg-opacity-10 dark:hover:bg-opacity-10"
