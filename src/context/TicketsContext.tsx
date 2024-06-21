@@ -12,6 +12,8 @@ interface TicketsContextProps {
     setIsDataUpdated: React.Dispatch<React.SetStateAction<boolean>>;
     setAllTickets: React.Dispatch<React.SetStateAction<ITicketByStatus[]>>;
     getTicketsByStatus: (status?: TaskStatus) => ITicketByStatus[];
+
+
 }
 
 const TicketsContext = createContext<TicketsContextProps | undefined>(undefined);

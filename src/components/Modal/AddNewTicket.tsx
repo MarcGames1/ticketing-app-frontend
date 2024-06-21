@@ -7,15 +7,16 @@ import * as Yup from 'yup';
 import Ticket from "@/entities/ticket";
 import TextInputArea from "@/components/shared/TextInputArea";
 import {useTickets} from "@/context/TicketsContext";
+import {toast} from "@/components/ui/use-toast";
 
-const AddNewBoardModal = ({onClose}:{onClose:any}) => {
-    // const { createBoard } = useBoards(); // TODO create Ticket Hook
+const AddNewTicketModal = ({onClose}:{onClose:any}) => {
     const {allTickets, setIsDataUpdated, setAllTickets} = useTickets();
     const validate = Yup.object({
         name: Yup.string().required("Can't be empty"),
 
         content: Yup.string()
     })
+
 
 
     return (
@@ -26,13 +27,16 @@ const AddNewBoardModal = ({onClose}:{onClose:any}) => {
             }}
             validationSchema={validate}
             onSubmit={  async (values, { setSubmitting }) => {
+                let t :Ticket
                 try {
-                    await Ticket.Create(values);
+                    console.log('Creating Ticket using', values)
+                     await Ticket.Create(values);
                     setIsDataUpdated(false);  // Assuming this should trigger some re-fetch or update
                     onClose();  // Close modal after operation
                 } catch (error) {
                     console.error("Failed to create ticket:", error);
                 } finally {
+                    toast({title:`Ticket Created`,})
                     setSubmitting(false);  // Reset submission state
                 }
             }}
@@ -48,7 +52,9 @@ const AddNewBoardModal = ({onClose}:{onClose:any}) => {
                         </label>
                         <TextInputArea label={"content"}  name={'content'}/>
 
-                        <Button type="submit" className="mt-6 w-full bg-mainPurple text-white text-base rounded-full p-2 transition duration-200 hover:bg-mainPurpleHover">Save Changes</Button>
+                        <Button
+                            type="submit"
+                            className="mt-6 w-full bg-mainPurple text-white text-base rounded-full p-2 transition duration-200 hover:bg-mainPurpleHover">Save Changes</Button>
 
                     </Form>
                 </div>
@@ -56,4 +62,4 @@ const AddNewBoardModal = ({onClose}:{onClose:any}) => {
         </Formik>
     )
 }
-export default AddNewBoardModal
+export default AddNewTicketModal

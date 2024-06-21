@@ -27,9 +27,10 @@ export default class Ticket implements Iticket {
     }
 
     public static async Update(data:Partial<Iticket>):Promise<Ticket> {
-        const res = api.patch<string>('/api/tickets', JSON.stringify(data))
-        const resData = await handleApiResponse<string>(res)
-        return new Ticket(JSON.parse(resData))
+        console.log(data)
+        const res =  api.patch<Object>('/api/tickets',data,{headers:{"Content-Type":"application/json"}})
+        const resData = await handleApiResponse<Object>(res) as unknown as Iticket
+        return new Ticket(resData)
     }
     public static async UpdateStatus(id:number | string, status :TaskStatus ):Promise<ApiClientSuccess<any> | ApiClientError> {
         return  await api.patch(`/api/tickets/${id}/changeStatus`,

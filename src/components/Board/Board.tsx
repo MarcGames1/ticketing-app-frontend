@@ -15,11 +15,11 @@ import {
 } from "@/components/ui/resizable"
 import {useTickets} from "@/context/TicketsContext";
 const BoardComponent: FC = () => {
-    const {allTickets, setIsDataUpdated, setAllTickets} = useTickets();
+    const { allTickets, isDataUpdated, setIsDataUpdated, setAllTickets, getTicketsByStatus } = useTickets();
 
     useEffect(() => {
     setIsDataUpdated(false)
-    }, []);
+    }, [isDataUpdated]);
     const handleOnDragEnd = async (result: DropResult) => {
         const { source, destination } = result;
 
