@@ -32,7 +32,7 @@ const TicketsComponent = forwardRef<HTMLDivElement, TicketComponentProps>(({ dat
 
 
     const handleConfirm = async () =>{
-
+    console.log("Handle Confirm")
     }
 
     function handleTaskModalClose() {
