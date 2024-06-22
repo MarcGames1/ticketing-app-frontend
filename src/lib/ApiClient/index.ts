@@ -201,7 +201,7 @@ class ApiClient {
 
 
 }
-const api = new ApiClient(process.env.NEXT_PUBLIC_BASEURLAPI || "http://localhost:8080") // TODO
+const api = new ApiClient(`${process.env.NEXT_PUBLIC_BASEURL}/api_v2`) // TODO
 
 
 export default api;
