@@ -1,14 +1,15 @@
 import { FieldArray, FieldArrayRenderProps } from "formik";
 import Button from "./Button";
 import TextInput from "./TextInput";
+import Task from "@/entities/tasks";
 
 interface InputArrayProps {
     label: string;
-    array: Array<{ title: string }>;
-    name: string;
+    array: Array<Task>;
+
 }
 
-const InputArray: React.FC<InputArrayProps> = ({ label, array, name }) => {
+const InputArray: React.FC<InputArrayProps> = ({ label, array }) => {
     return (
         <>
             <label className="body-md capitalize text-mediumGrey dark:text-white mt-6 block">
@@ -16,7 +17,7 @@ const InputArray: React.FC<InputArrayProps> = ({ label, array, name }) => {
             </label>
 
             <FieldArray
-                name={name}
+                name={"x"}
                 render={(arrayHelpers: FieldArrayRenderProps) => (
                     <div>
                         {array.map((_, i) => (

@@ -5,6 +5,7 @@ import {handleApiResponse} from "@/lib/ApiClient/utils";
 
 import {Iuser} from "@/declarations/users";
 import User from './user'
+import IAttachment from "@/declarations/attachment";
 class Task implements ITask {
 
     description: string;
@@ -12,6 +13,7 @@ class Task implements ITask {
     status: TaskStatus;
     title: string;
     user: Iuser;
+    attachments?: IAttachment[]
 
     constructor(data:ITask) {
         this.id = data.id
@@ -19,6 +21,7 @@ class Task implements ITask {
         this.status = data.status
         this.title = data.title
         this.user = new User(data.user)
+        this.attachments = data.attachments
     }
 
     public static async Create (data:ITask):Promise<Task> {
