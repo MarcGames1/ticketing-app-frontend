@@ -1,4 +1,4 @@
-const styling = (props) => {
+const styling = () => {
     return (
         <div className="grid gap-4 p-4 bg-lightGrey dark:bg-veryDarkGrey">
             <div className="bg-mainPurple h-[50px]">mainPurple</div>

@@ -15,6 +15,7 @@ import Image from "next/image";
 
 
 import {useLoginForm} from "@/hooks/useLoginForm";
+import Link from "next/link";
 
 export function LoginForm() {
 const { form, onSubmit, isLoading } = useLoginForm()
@@ -50,13 +51,17 @@ const { form, onSubmit, isLoading } = useLoginForm()
                             </FormItem>
                         )}
                     />
+
                     {/* eslint-disable-next-line react/jsx-no-undef */}
+                <div className={'flex w-full flex-row items-center justify-between gap-5'}>
                     <Button disabled={isLoading}  type="submit">
                         {isLoading ?
-                        <span className={'animate-spin'}>
+                            <span className={'animate-spin'}>
                             <CgSpinnerTwoAlt  size={'1.5rem'} color={'currentColor'} />
                 </span> : <>Login</>}</Button>
-                </form>
+                    <Link className={'link  hover:underline transition-all hover:text-purple-500'} href={'/signup'}>Register</Link>
+                </div>
+             </form>
             </Form>
         </div>
     )

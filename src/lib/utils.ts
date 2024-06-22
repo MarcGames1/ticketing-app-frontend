@@ -27,9 +27,9 @@ export const handleSigninResponse =(responseData:IloginResponseData)=>{
 
   }
   const auth:Iauth = {
-    idToken: responseData.idToken,
-    refreshToken: responseData.refreshToken,
-    accessToken: responseData.accessToken
+    _idToken: responseData.idToken,
+    _refreshToken: responseData.refreshToken,
+    _accessToken: responseData.accessToken
   }
 return {user, auth}
 }

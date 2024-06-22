@@ -1,9 +1,11 @@
 'use client'
-import {ReactNode, useState} from "react";
+import {ReactNode, useEffect, useState} from "react";
 import BoardComponent from "@/components/Board/Board";
 import useAppState from "@/hooks/useAppState";
 import Sidebar from "@/components/Sidebar/Sidebar";
 import Header from "@/components/Header/Header";
+import AppLayoutProvider from "@/components/Layout/AppLayoutProvider";
+import Auth from "@/entities/Auth";
 
 
 interface AppLayoutProps{
@@ -13,9 +15,7 @@ const AppLayout = ({children}:AppLayoutProps) =>{
 
     const [showSidebar, setShowSidebar] = useState(true);
 
-
-
-    return <>
+    return <AppLayoutProvider>
         <div className="h-screen">
             <Header />
             <div className="flex board-height">
@@ -24,6 +24,6 @@ const AppLayout = ({children}:AppLayoutProps) =>{
             </div>
         </div>
 
-    </>
+    </AppLayoutProvider>
 }
 export default AppLayout

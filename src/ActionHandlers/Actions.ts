@@ -16,7 +16,6 @@ class Actions {
 
     static Logout() {
         clearLocalStorage()
-
         Auth.signOut()
         toast({title: "Logging you out", content: 'redirecting to login page ...'})
     }

@@ -28,8 +28,8 @@ class Task implements ITask {
     }
 
     public static async Update(data:Partial<ITask>):Promise<Task> {
-        const res = api.patch('/api/tasks', JSON.stringify(data))
-        const resData = await handleApiResponse<ITask>(res)
+        const res = api.patch<Partial<ITask>>('/api/tasks', data)
+        const resData:ITask = await handleApiResponse<Partial<ITask>>(res) as ITask
         return new Task(resData)
     }
 

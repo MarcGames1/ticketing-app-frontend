@@ -1,6 +1,6 @@
 import {Idepartment} from "@/declarations/deptartment";
 import {handleApiResponse} from "@/lib/ApiClient/utils";
-import api from "@/lib/ApiClient";
+import api, {ApiClientError, ApiClientSuccess} from "@/lib/ApiClient";
 
 
 export default class Department implements Idepartment {
@@ -12,18 +12,18 @@ export default class Department implements Idepartment {
     name: string;
 
     static async Create(name:string){
-        const res = api.post('/api/departments', { name })
-        const resData = await handleApiResponse<Idepartment>(res);
+        const res:Promise<ApiClientSuccess<Partial<Idepartment>> | ApiClientError> = api.post<Partial<Idepartment>>('/api/departments', {name})
+        const resData :Idepartment = await handleApiResponse(res) as Idepartment
         return new Department(resData)
     }
     static async Update(data:Idepartment ) {
-        const res = api.patch('/api/departments', JSON.stringify(data))
-        const resData = await handleApiResponse<Idepartment>(res);
+        const res : Promise<ApiClientSuccess<Idepartment> | ApiClientError> = api.patch<Idepartment>('/api/departments', data)
+        const resData: Idepartment = await handleApiResponse<Idepartment>(res) ;
         return new Department(resData)
     }
     static async getAll():Promise<Department[]>{
         const res = api.get(`/api/departments`)
-        const resData = await handleApiResponse<Idepartment[]>(res);
+        const resData :Idepartment[] = await handleApiResponse<Idepartment[]>(res);
         const departments:Department[] = []
         resData.forEach(i => departments.push(new Department(i)))
         return departments

@@ -1,12 +1,12 @@
 // context/UserContext.tsx
 "use client";
 
-import { createContext, ReactNode, useContext } from "react";
-import { useCurrentUser } from "@/hooks/useCurrentUser";
+import {createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState} from "react";
 import {Iuser} from "@/declarations/users";
 import useLocalStorage, {LocalStoredData} from "@/hooks/useLocalStorage";
 import User from "@/entities/user";
 import Auth from "@/entities/Auth";
+import {Iauth} from "@/declarations/auth";
 
 interface UserContextType {
     user: User |  undefined;
@@ -17,9 +17,15 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useLocalStorage<User>(LocalStoredData.user);
-    // try to get user from local storage
 
 
+    useEffect(() => {
+
+       const authinstance =  Auth.getInstance()
+        console.log("AUTH DATA CHANGED!!! =>>> ", authinstance)
+
+
+    }, [Auth.getInstance()]);
 
     return (
         <UserContext.Provider value={{ user, setUser }}>

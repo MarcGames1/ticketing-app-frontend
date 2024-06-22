@@ -1,9 +1,9 @@
 'use client'
 import {LoginForm} from "@/components/loginForm/loginForm";
-import {useCurrentUser} from "@/hooks/useCurrentUser";
 import {useRouter} from "next/navigation";
 import {useUserContext} from "@/context/UserContext";
 import {useEffect} from "react";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter()
@@ -27,6 +27,7 @@ export default function LoginPage() {
   return (
     <section>
     <LoginForm />
+
     </section>
   );
 }

@@ -1,5 +1,5 @@
 export interface Iauth {
-    idToken:string,
-    refreshToken:string,
-    accessToken:string
+    _idToken:string,
+    _refreshToken:string,
+    _accessToken:string
 }

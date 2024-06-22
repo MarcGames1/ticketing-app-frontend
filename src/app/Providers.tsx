@@ -9,15 +9,12 @@ const Providers = ({ children }: { children: React.ReactNode }) =>{
     return(
         <ThemeProvider attribute="class">
             <UserProvider>
-                <TicketsProvider>
-            <AppStateProvider>
                 {children}
                 <Toaster/>
                 <div id="modal"></div>
-            </AppStateProvider>
-                </TicketsProvider>
             </UserProvider>
         </ThemeProvider>
+
     )
 }
 export default Providers

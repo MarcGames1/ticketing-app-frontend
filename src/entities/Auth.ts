@@ -1,4 +1,5 @@
-import { Iauth } from "@/declarations/auth";
+import {Iauth} from "@/declarations/auth";
+import {clearLocalStorage} from "@/lib/ApiClient/utils";
 
 class Auth {
     private static instance: Auth | undefined;
@@ -7,59 +8,61 @@ class Auth {
     private _refreshToken: string;
 
     // Private constructor
-    private constructor(authData: Iauth ) {
-            this._accessToken = authData.accessToken;
-            this._refreshToken = authData.refreshToken;
-            this._idToken = authData.idToken;
+    private constructor(authData: Iauth,  ) {
+            this._accessToken = authData._accessToken;
+            this._refreshToken = authData._refreshToken;
+            this._idToken = authData._idToken;
+
     }
     // remove singleton instance when signout
     static signOut (){
         Auth.instance = undefined
+        clearLocalStorage()
 
     }
 
     // Static method to get the instance of Auth
-    public static getInstance(authData?: Iauth | string): Auth | undefined {
-        if(Auth.instance){
-            return Auth.instance
-        }
-        if(authData){
-            if(typeof authData === 'string'){
-               const parsed=  JSON.parse(authData) as unknown as Iauth
-                Auth.instance = new Auth(parsed)
-                Auth.writeToLocalStorage(Auth.instance)
-                return Auth.instance
-            } else {
-                Auth.instance = new Auth(authData)
-                Auth.writeToLocalStorage(Auth.instance)
-                return Auth.instance
-            }
-        }
-        if(!Auth.instance) {
-        // try get instance from ls
+    public static getInstance(): Auth | undefined{
+    if(Auth.instance && Auth.instance._idToken){
+    return Auth.instance
+} else if(!Auth.instance)
+{
+            // try get instance from ls
             const data = Auth.getDataFromLocalStorage()
-            if(data){
-                Auth.instance = data
-
+            if(data && data._idToken){
+                return data
             }
         }
+    return undefined
+}
+    // Static Method to set values to the instance of Auth
+    public static setInstanceValues(authData: Iauth): Auth  {
 
+        let instance  = new Auth(authData)
+        Auth.writeToLocalStorage(instance)
+        return instance
 
-        return undefined
     }
 
      static getDataFromLocalStorage() {
             if( typeof window !== 'undefined' && typeof window.localStorage !== 'undefined'){
                 const authData = localStorage.getItem('auth')
-                return authData ?  Auth.getInstance(JSON.parse(authData)) : undefined
-            } else return undefined
+                if(authData && authData !== "{}" && authData.length > 20){
+                    return Auth.setInstanceValues(JSON.parse(authData))
+                }
 
+            }
+            else return undefined
     }
 
     static writeToLocalStorage(instance:Auth){
         if( typeof window !== 'undefined' && typeof window.localStorage !== 'undefined'){
-            localStorage.setItem('auth', JSON.stringify(instance))
-            return true
+            const stringifiedData = JSON.stringify(instance)
+            if( stringifiedData.length > 20){
+                localStorage.setItem('auth', JSON.stringify(instance))
+                return true
+            }
+
         }
         return false
     }
@@ -93,12 +96,12 @@ class Auth {
 
     // Method to update tokens
     public updateTokens(tokens: Partial<Iauth>): void {
-        if (tokens.accessToken !== undefined) {
-            this._accessToken = tokens.accessToken;
+        if (tokens._accessToken !== undefined) {
+            this._accessToken = tokens._accessToken;
             Auth.writeToLocalStorage(this)
         }
-        if (tokens.idToken !== undefined) {
-            this._idToken = tokens.idToken;
+        if (tokens._idToken !== undefined) {
+            this._idToken = tokens._idToken;
         }
     }
 }

@@ -1,7 +1,5 @@
 'use client'
-import {useEffect} from "react";
-import api from "@/lib/ApiClient";
-import {getAuth, handleApiResponse} from "@/lib/ApiClient/utils";
+
 import Image from "next/image";
 
 // https://bucketdemojava.s3.eu-west-3.amazonaws.com/2efc65fa-bb39-4168-887c-368061eedc5d

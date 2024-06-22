@@ -2,10 +2,12 @@ import {ApiClientError, ApiClientSuccess} from "@/lib/ApiClient/index";
 import Auth from "@/entities/Auth";
 const isClientSide =  typeof window !== 'undefined' && typeof window.localStorage !== 'undefined'
 
-export const clearLocalStorage = () =>{
+export const clearLocalStorage = (callback?: (() => void) | undefined) =>{
     if( typeof window !== 'undefined' && typeof window.localStorage !== 'undefined'){
-
         localStorage.clear()
+        if(callback){
+            callback()
+        }
     }
 }
 export async function handleApiResponse<T>(promise: Promise<ApiClientSuccess<T> | ApiClientError>): Promise<T> {
@@ -16,15 +18,9 @@ export async function handleApiResponse<T>(promise: Promise<ApiClientSuccess<T> 
     } else {
         console.log('Handle Api Response =>',res)
         // clearLocalStorage()
-        throw new ApiClientError("API ERROR");
+        throw res
     }
 }
 
-export function getAuth ():Auth | undefined {
-    if( typeof window !== 'undefined' && typeof window.localStorage !== 'undefined'){
-       const authData = localStorage.getItem('auth')
 
-       return authData ?  Auth.getInstance(authData) : undefined
-    } else return undefined
 
-}

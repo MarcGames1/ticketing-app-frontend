@@ -3,6 +3,7 @@ import AddNewTaskModal from "@/components/Modal/AddNewTicket";
 import useWindowSize from "@/hooks/useWindowSize";
 import Image from "next/image";
 import { useState } from "react";
+import AddNewTicketModal from "@/components/Modal/AddNewTicket";
 
 const AddNewTicket = () => {
     const [openTicketModal, setOpenTicketModal] = useState(false);
@@ -21,7 +22,7 @@ const AddNewTicket = () => {
                     </button>
                 )}
             <Modal show={openTicketModal} onClose={() => setOpenTicketModal(false)}>
-                <AddNewTaskModal onClose={() => setOpenTicketModal(!openTicketModal)} />
+                <AddNewTicketModal onClose={() => setOpenTicketModal(!openTicketModal)} />
             </Modal>
         </>
     )

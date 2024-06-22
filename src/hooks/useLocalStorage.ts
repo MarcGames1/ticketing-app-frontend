@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import Auth from "@/entities/Auth";
 import User from "@/entities/user";
+
 export enum LocalStoredData {
     auth='auth',
     user="user"
@@ -13,10 +14,13 @@ function useLocalStorage<T>(key: LocalStoredData, initial: T | undefined = undef
         if (isBrowser) {
             const saved = window.localStorage.getItem(key);
             if (saved !== null && saved !== undefined) {
-                const parsed = JSON.parse(saved);
+
                 if (key === LocalStoredData.auth) {
-                    return Auth.getInstance(parsed) as T;
+                    console.log("SETTING LOCALSTORAGE AUTH TO ", saved)
+                    return Auth.getInstance() as T
+
                 } else if (key === LocalStoredData.user) {
+                    const parsed = JSON.parse(saved);
                     return new User(parsed) as T;
                 }
             }

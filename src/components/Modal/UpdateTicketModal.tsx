@@ -55,12 +55,14 @@ const UpdateTicketModal: FC<UpdateTicketModalProps> = ({ data, close, onConfirm 
             status: status,
     }}
     validationSchema={validate}
-    onSubmit={async (values) => {
+    onSubmit={async (values,{setSubmitting}) => {
+        setSubmitting(true)
         values.status = status;
         const ticket =values as Partial<ITicket>
         await Ticket.Update(ticket);
         toast({title:"Ticket Updated! "})
         setIsDataUpdated(false)
+        setSubmitting(false)
         close();
     }}
 >
@@ -69,10 +71,10 @@ const UpdateTicketModal: FC<UpdateTicketModalProps> = ({ data, close, onConfirm 
         <h1 className="heading-lg mb-6">Edit Ticket</h1>
     <Form>
     <TextInput label="Title" name="title" type="text" placeholder="e.g. Take coffee break" />
-    <TextArea label="Description" name="description" placeholder="e.g. It’s always good to take a break. This 15 minute break will recharge the batteries a little." />
+    <TextArea label="Description" name="content" placeholder="e.g. It’s always good to take a break. This 15 minute break will recharge the batteries a little." />
     <InputArray name={'Task Status'} label="tasks" array={getTaskTitles(formik.values.tasks)} />
 
-    <Button type="submit"
+    <Button disabled={formik.isSubmitting} type="submit"
             className="mt-6 w-full bg-mainPurple text-white text-base rounded-full p-2 transition duration-200 hover:bg-mainPurpleHover">Save Changes</Button>
     </Form>
     </div>

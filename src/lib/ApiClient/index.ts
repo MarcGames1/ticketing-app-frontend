@@ -1,9 +1,7 @@
 import axios, {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios';
-import {getAuth} from "@/lib/ApiClient/utils";
 import Auth from "@/entities/Auth";
 import {Iauth} from "@/declarations/auth";
-import Any = jasmine.Any;
-import {headers} from "next/headers";
+
 
 
 export class ApiClientError extends AxiosError {
@@ -66,10 +64,7 @@ class ApiClient {
     private _initInterceptors() {
         this.axiosInstance.interceptors.request.use(
             (config) => {
-                const auth = getAuth()
-                console.log('interceptor data')
-                console.log({auth, config})
-                console.log(String( config.url  && config.url.includes('refreshToken')))
+                const auth = Auth.getInstance()
                 if (auth) {
                     config.headers['Authorization'] = `Bearer ${auth.idToken}`;
                 }
@@ -79,81 +74,26 @@ class ApiClient {
             (error) => Promise.reject(error)
         );
 
-        // this.axiosInstance.interceptors.response.use(
-        //     (response) => response,
-        //     async (error) => {
-        //         const originalRequest = error.config;
-        //         console.log("Original Request and Error.config",originalRequest, error.config)
-        //         if (error.response?.status === 401 && !originalRequest._retry) {
-        //             if (this.isRefreshing) {
-        //                 return new Promise((resolve, reject) => {
-        //                     this.failedQueue.push({ resolve, reject });
-        //                 })
-        //                     .then(token => {
-        //                         originalRequest.headers['Authorization'] = 'Bearer ' + token;
-        //                         return this.axiosInstance(originalRequest);
-        //                     })
-        //                     .catch(err => {
-        //                         return Promise.reject(err);
-        //                     });
-        //             }
-        //
-        //             originalRequest._retry = true;
-        //             this.isRefreshing = true;
-        //
-        //             return new Promise((resolve, reject) => {
-        //                 const auth = getAuth()
-        //                 if (!auth) return reject(new Error('No auth instance available'));
-        //
-        //                 this.refreshToken().then((token) => {
-        //                     auth.updateTokens(token);
-        //                     this.processQueue(null, token);
-        //                     resolve(this.axiosInstance(originalRequest));
-        //                 }).catch((err) => {
-        //                     this.processQueue(err, null);
-        //                     reject(err);
-        //                 }).finally(() => {
-        //                     this.isRefreshing = false;
-        //                 });
-        //             });
-        //         }
-        //         return Promise.reject(error);
-        //     }
-        // );
+
     }
 
     private async refreshToken(): Promise<Partial<Iauth>> {
-        const auth = getAuth()
-      if(!auth) {return getAuth() as Auth }
+        const auth = Auth.getInstance()
+      if(!auth) {throw new Error("Could not Refresh Tokens")}
 
         const {accessToken, refreshToken} = auth
         try {
             const response = await axios.post(`${this.baseUrl}/api/auth/refreshToken`, { refreshToken, accessToken });
             if (response.status === 200) {
                 const {accessToken, idToken} = response.data;
-
-                return {accessToken, idToken}
+                        Auth.setInstanceValues({_refreshToken:auth.refreshToken, _accessToken:accessToken, _idToken:idToken})
+                return {_accessToken:accessToken, _idToken:idToken}
             } else {
                 throw new ApiClientError('Unable to refresh token');
             }
         } catch (error) {
             throw new ApiClientError('Unable to refresh token');
         }
-    }
-    private processQueue(error: any, token: Partial<Iauth> | null = null) {
-        this.failedQueue.forEach(prom => {
-            console.log("Processing failed Queue")
-            if (error) {
-                prom.reject(error);
-                console.log("prom.reject")
-                console.table(prom)
-            } else {
-                prom.resolve(token?.idToken || '');
-                console.log("prom.resolve")
-                console.table(prom)
-            }
-        });
-        this.failedQueue = [];
     }
 
     get<T=any>(url: string ,config = {}): Promise<ApiClientSuccess<T> | ApiClientError> {
@@ -218,14 +158,8 @@ class ApiClient {
                 this.isRefreshing &&     this.axiosInstance.interceptors.request.use(
                     (config) => {
                         this.isRefreshing = false
-                        if(auth){
-                            config.headers['Authorization'] = `Bearer ${auth.idToken}`;
-                        }
-                        console.log('interceptor data')
-                        console.log({auth, config})
-                        console.log(String( config.url  && config.url.includes('refreshToken')))
                         if (auth && config && config.url  &&  !config.url.includes('refreshToken')) {
-                            config.headers['Authorization'] = `Bearer ${auth.idToken}`;
+                            config.headers['Authorization'] = `Bearer ${auth._idToken}`;
                         }
 
                         return config;
@@ -233,12 +167,9 @@ class ApiClient {
                     (error) => Promise.reject(error)
                 );
 
-
-
-
                 return  this.request({...previousConfig, headers:{
                     ...previousConfig.headers,
-                    "Authorization": `Bearer ${auth.idToken}`
+                    "Authorization": `Bearer ${auth._idToken}`
                     }})
 
             }
