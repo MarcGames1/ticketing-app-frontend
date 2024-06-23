@@ -201,6 +201,6 @@ class ApiClient {
 
 
 }
-const api = new ApiClient(`${process.env.NEXT_PUBLIC_API}`)
+const api = new ApiClient(`${process.env.NEXT_PUBLIC_BASEURL}/api/v2`) // TODO
 
 export default api;

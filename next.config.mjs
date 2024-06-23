@@ -10,7 +10,14 @@ const nextConfig = {
             },
         ],
     },
-
+    async rewrites() {
+        return [
+            {
+                source: '/api/v2/:path*', //  `/api/*`
+                destination: `${process.env.NEXT_PUBLIC_API}/:path*`, // redirect  backend
+            },
+        ];
+    },
     skipTrailingSlashRedirect: true,
 };
 
