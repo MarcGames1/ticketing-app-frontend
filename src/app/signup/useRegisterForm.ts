@@ -74,5 +74,5 @@ export function useRegisterForm() {
         setIsLoading(false);
     };
 
-    return { form, onSubmit, isLoading };
+    return { form, onSubmit, isLoading, departments };
 }

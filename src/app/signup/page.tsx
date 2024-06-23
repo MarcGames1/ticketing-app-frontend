@@ -16,8 +16,8 @@ import { ChevronsUpDown} from "lucide-react";
 
 
 const SignUpPage = () =>{
-    const { form, onSubmit, isLoading } = useRegisterForm()
-return <>UNDER DEVELOPMENT</>
+    const { form, onSubmit, isLoading, departments } = useRegisterForm()
+
     return <>
         <section className={'w-screen'}>
             <div className={'w-full h-screen  flex flex-row items-center justify-items-center justify-around place-items-center '}>
@@ -81,7 +81,7 @@ return <>UNDER DEVELOPMENT</>
                             name="role"
                             render={({ field }) => (
                                 <FormItem className="flex flex-col">
-                                    <FormLabel>Rol User</FormLabel>
+                                    <FormLabel>Department</FormLabel>
                                     <Popover>
                                         <PopoverTrigger asChild>
                                             <FormControl>
@@ -94,27 +94,27 @@ return <>UNDER DEVELOPMENT</>
                                                     )}
                                                 >
                                                     {field.value
-                                                        ? userRoles.find((rol) => rol.value === field.value)
-                                                            ?.label
-                                                        : 'Selecteaza Rol'}
+                                                        ? departments.find((d) => d.name === field.value)
+                                                            ?.name
+                                                        : 'Select department'}
                                                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                 </Button>
                                             </FormControl>
                                         </PopoverTrigger>
                                         <PopoverContent className="w-[200px] p-0">
                                             <Command>
-                                                <CommandInput placeholder="Cauta Rol..." />
-                                                <CommandEmpty>Niciun Rol Gasit.</CommandEmpty>
+                                                <CommandInput placeholder="Search Department..." />
+                                                <CommandEmpty>No departments found.</CommandEmpty>
                                                 <CommandGroup>
-                                                    {userRoles.map((rol) => (
+                                                    {departments.map((d) => (
                                                         <CommandItem
-                                                            value={rol.label}
-                                                            key={uuidv4() + rol.label}
+                                                            value={String(d.id)}
+                                                            key={uuidv4() + d.id}
                                                             onSelect={() => {
-                                                                form.setValue('role', rol.value);
+                                                                form.setValue('departmentId', String(d.id));
                                                             }}
                                                         >
-                                                            {rol.label}
+                                                            {d.name}
                                                         </CommandItem>
                                                     ))}
                                                 </CommandGroup>
