@@ -25,9 +25,6 @@ class Actions {
     static async Login(data: any) {
         let res = await api.post('/api/auth/login', data, {headers: {"Content-Type": "application/json"}})
         if ((res instanceof ApiClientError) || !res.data.ok && !res.data.id) {
-            console.clear()
-            console.log(JSON.stringify(res.message, "", 2))
-            console.log(res.message)
             // @ts-ignore
 
             toast({
@@ -56,9 +53,10 @@ class Actions {
 
 
     static async Register(data: RegisterData) {
-       const res:ApiClientError | ApiClientSuccess<{nextAction:string}> = await api.post('/api/auth/signup', data)
+        // @ts-ignore
+       const res:ApiClientError | ApiClientSuccess<{nextAction:string}> = await api.post<RegisterData>('/api/auth/signup', data)
         if(res instanceof ApiClientError) {
-            toast({title: "Could not get data STATUS CODE: "+ res.status, description: res.message, variant:"destructive"})
+            toast({title: "Could not get data", description: res.message, variant:"destructive"})
         }
         else {
             const nextActionResponse = res.data.nextAction === "Login" ? "You Can Login" : "You Must Confirm Email Before Logging In"
