@@ -3,7 +3,9 @@
 
 
 import Image from "next/image";
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
+import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover"
+import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
+import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem,} from "@/components/ui/command"
 import {Input} from "@/components/ui/input";
 import {PasswordInput} from "@/components/ui/password-input";
 import {Button} from "@/components/ui/button";
@@ -75,15 +77,51 @@ const SignUpPage = () =>{
                             )}
                         />
                         <FormField
-                            control={form.control}
-                            name="departmentId"
-                            render={({field}) => (
-                                <FormItem>
-                                    <FormLabel>Department</FormLabel>
-                                    <FormControl>
-                                        <PasswordInput placeholder="password" {...field} />
-                                    </FormControl>
-                                    <FormMessage/>
+                            name="role"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-col">
+                                    <FormLabel>Rol User</FormLabel>
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <FormControl>
+                                                <Button
+                                                    variant="outline"
+                                                    role="combobox"
+                                                    className={cn(
+                                                        'w-[200px] justify-between',
+                                                        !field.value && 'text-muted-foreground'
+                                                    )}
+                                                >
+                                                    {field.value
+                                                        ? userRoles.find((rol) => rol.value === field.value)
+                                                            ?.label
+                                                        : 'Selecteaza Rol'}
+                                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                </Button>
+                                            </FormControl>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-[200px] p-0">
+                                            <Command>
+                                                <CommandInput placeholder="Cauta Rol..." />
+                                                <CommandEmpty>Niciun Rol Gasit.</CommandEmpty>
+                                                <CommandGroup>
+                                                    {userRoles.map((rol) => (
+                                                        <CommandItem
+                                                            value={rol.label}
+                                                            key={uuidv4() + rol.label}
+                                                            onSelect={() => {
+                                                                form.setValue('role', rol.value);
+                                                            }}
+                                                        >
+                                                            {rol.label}
+                                                        </CommandItem>
+                                                    ))}
+                                                </CommandGroup>
+                                            </Command>
+                                        </PopoverContent>
+                                    </Popover>
+                                    <FormDescription>Rolul Utilizatorului.</FormDescription>
+                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
