@@ -1,7 +1,7 @@
 'use client'
 // TODO send the following data: firstName, lastName, email, password, departmentID
-
-
+import {cn} from "@/lib/utils";
+import {v4 as uuidv4} from 'uuid';
 import Image from "next/image";
 import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover"
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
@@ -12,11 +12,12 @@ import {Button} from "@/components/ui/button";
 import {CgSpinnerTwoAlt} from "react-icons/cg";
 import Link from "next/link";
 import {useRegisterForm} from "@/app/signup/useRegisterForm";
+import { ChevronsUpDown} from "lucide-react";
 
 
 const SignUpPage = () =>{
     const { form, onSubmit, isLoading } = useRegisterForm()
-
+return <>UNDER DEVELOPMENT</>
     return <>
         <section className={'w-screen'}>
             <div className={'w-full h-screen  flex flex-row items-center justify-items-center justify-around place-items-center '}>
@@ -120,7 +121,7 @@ const SignUpPage = () =>{
                                             </Command>
                                         </PopoverContent>
                                     </Popover>
-                                    <FormDescription>Rolul Utilizatorului.</FormDescription>
+                                    <FormDescription>User Department</FormDescription>
                                     <FormMessage />
                                 </FormItem>
                             )}

@@ -174,17 +174,15 @@ class ApiClient {
 
             }
             if (response.status === 400 || response.status >= 402 && response.status <= 499) {
-                return new ApiClientError(String(response.data));
+                return new ApiClientError(response.data);
             }
             else if(response.status >= 200 && response.status <= 399){
                 this.isRefreshing = true
                 return new ApiClientSuccess(response.status, response.statusText, response.data )
             }
             else {
-                return new ApiClientError(
-                    String(response?.statusText || 'Server Error'),
-                    response.status
-                );
+                return new ApiClientError(response.data);
+
             }
 
 

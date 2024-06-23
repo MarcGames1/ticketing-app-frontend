@@ -40,7 +40,7 @@ const Header = () =>{
                                     onClose={() => setShowMenu(!showMenu)}
                                     className={"align-start pt-20 px-12"}
                                 >
-                                    {/*<MobileBoardMenu />*/} <>mOBILE BOARD MENU</>
+                                    {/*<MobileBoardMenu />*/} <div>TODO mOBILE BOARD MENU</div>
                                 </Modal>
                             </>
                         ) : (
