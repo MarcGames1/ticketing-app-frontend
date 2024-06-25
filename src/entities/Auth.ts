@@ -38,7 +38,8 @@ class Auth {
     // Static Method to set values to the instance of Auth
     public static setInstanceValues(authData: Iauth): Auth  {
 
-        let instance  = new Auth(authData)
+        const instance  = new Auth(authData)
+        this.instance = instance
         Auth.writeToLocalStorage(instance)
         return instance
 
