@@ -10,14 +10,14 @@ const nextConfig = {
             },
         ],
     },
-    async rewrites() {
-        return [
-            {
-                source: '/api/v2/:path*', //  `/api/*`
-                destination: `http://localhost:8080/:path*`, // redirect  backend
-            },
-        ];
-    },
+    // async rewrites() {
+    //     return [
+    //         {
+    //             source: '/api/v2/:path*', //  `/api/*`
+    //             destination: `http://localhost:8080/:path*`, // redirect  backend
+    //         },
+    //     ];
+    // },
     skipTrailingSlashRedirect: true,
 };
 

@@ -16,9 +16,7 @@ export class ApiClientError extends AxiosError {
         this.message = m
         this.name = 'ApiClientError';
         this.status = status
-        if(window && localStorage) {
-            localStorage.clear()
-        }
+
     }
 }
 
@@ -199,6 +197,6 @@ class ApiClient {
 
 
 }
-const api = new ApiClient(`${process.env.NEXT_PUBLIC_BASEURL}/api/v2`) // TODO
+const api = new ApiClient(`${process.env.NEXT_PUBLIC_API}`) // TODO
 
 export default api;
