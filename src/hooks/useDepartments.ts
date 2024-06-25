@@ -9,7 +9,8 @@ const useDepartments= () =>{
 
     useEffect(()=>{
         const getData = () =>{
-           const res =  api.get<Idepartment[]>('/api/departments/list')
+            // @ts-ignore
+           const res =  api.post<Idepartment[]>('/api/departments/list')
 
         }
         if(!isDataUpdated){

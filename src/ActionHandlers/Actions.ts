@@ -64,7 +64,9 @@ class Actions {
         }
     }
     static async getDepartments():Promise<Idepartment[]> {
-        const res = api.get<Idepartment[]>('/api/departments/list');
+
+        const res = api.post<Object>('/api/departments/list',{} );
+        // @ts-ignore
         return await handleApiResponse<Idepartment[]>(res)
     }
 }
